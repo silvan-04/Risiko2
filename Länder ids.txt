@@ -1,0 +1,48 @@
+Nordamerika
+	Alaska : ak
+	Nordwest-Territorien : nt
+	Alberta : ab
+	Ontario : on
+	Quebec : qb
+	Grönland : gr
+	Weststaaten : unw
+	Oststaaten : une
+	Mittelamerika : cm
+Südamerika
+	Venezuela : ve
+	Peru : pe
+	Brasilien : br
+	Argentinien : ar
+Europa
+	Island : is
+	Skandinavien : sk
+	Großbritannien : gb
+	Nordeuropa : eun
+	Westeuropa : euw
+	Südeuropa : eus
+	Ukraine : ua
+Afrika
+	Nordafrika : an
+	Ägypten : eg
+	Ostafrika : ao
+	Kongo : ko
+	Südafrika : as
+	Madagaskar : ma
+Asien
+	Afghanistan : af
+	China : ch
+	Indien : in
+	Irkutsk : ir
+	Japan : jp
+	Kamtschatka : ka
+	Mongolei : mo
+	Mittlerer Osten : me
+	Sibirien : mn
+	Ural : ur
+	Jakutien : ya
+	Südostasien : aso
+Australien	
+	Indonesien : id
+	Neuguinea : ng
+	Westaustralien : auw
+	Ostaustralien : auo
