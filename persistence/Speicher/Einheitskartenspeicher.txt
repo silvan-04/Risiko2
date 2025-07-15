@@ -1,4 +1,4 @@
-40
+36
 ak
 Kanone
 nt
@@ -7,11 +7,7 @@ ab
 Kanone
 on
 Kanone
-gr
-Kanone
 unw
-Kanone
-une
 Kanone
 cm
 Kanone
@@ -25,10 +21,6 @@ ar
 Kanone
 is
 Kanone
-sk
-Soldat
-gb
-Soldat
 eun
 Soldat
 euw

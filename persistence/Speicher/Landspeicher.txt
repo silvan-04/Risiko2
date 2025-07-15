@@ -20,8 +20,8 @@ ab
 f
 0
 Alberta
-1
-Tim
+2
+Juan
 ab
 4
 ak
@@ -32,7 +32,7 @@ f
 0
 Ontario
 1
-Silvan
+Juan
 on
 6
 ab
@@ -44,8 +44,8 @@ nt
 f
 0
 Quebec
-2
-Silvan
+1
+Juan
 qb
 3
 gr
@@ -54,8 +54,8 @@ une
 f
 0
 Grönland
-1
-Silvan
+3
+Juan
 gr
 4
 nt
@@ -65,8 +65,8 @@ is
 f
 0
 Weststaaten
-2
-Silvan
+1
+Juan
 unw
 4
 ab
@@ -77,7 +77,7 @@ f
 0
 Oststaaten
 1
-Silvan
+Juan
 une
 4
 on
@@ -88,7 +88,7 @@ f
 0
 Mittelamerika
 1
-Silvan
+Juan
 cm
 3
 unw
@@ -97,7 +97,7 @@ ve
 f
 0
 Venezuela
-9
+1
 Juan
 ve
 3
@@ -107,15 +107,15 @@ pe
 f
 0
 Peru
-1
-Tim
+10
+Juan
 pe
 3
 ve
 br
 ar
 f
-0
+7
 Brasilien
 1
 Tim
@@ -181,7 +181,7 @@ eus
 f
 0
 Westeuropa
-1
+5
 Tim
 euw
 4
@@ -295,7 +295,7 @@ in
 f
 0
 China
-1
+7
 Silvan
 ch
 6
@@ -339,7 +339,7 @@ mo
 f
 0
 Kamtschatka
-1
+5
 Tim
 ka
 4
@@ -408,8 +408,8 @@ ka
 f
 0
 Südostasien
-1
-Tim
+8
+Silvan
 aso
 3
 ch

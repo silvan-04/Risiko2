@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class ActionPanel extends JPanel {
     private int buttonClicked;
     private String angriffsLand;
     private String zielLand;
+    private int einheiten;
 
     /**
      *
@@ -36,6 +38,7 @@ public class ActionPanel extends JPanel {
         this.weltPanel = weltPanel;
         this.setLayout(new BorderLayout());
         this.buttonClicked = 0;
+        this.einheiten = 0;
 
         JButton aktionsKnopf = new JButton("Armee verteilen!");
         add(aktionsKnopf, BorderLayout.EAST);
@@ -44,13 +47,81 @@ public class ActionPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 //Erste Phase
                 if (welt.getPhase() == 0) {
-//                    int auswahl = JOptionPane.showConfirmDialog(frame, "Möchtest du Karten einlösen?", "Armee verteilen!", JOptionPane.YES_NO_OPTION);
-//                   if (auswahl == 1) {
-//                       armeeMitKarten();
-//                    }
-                    if (buttonClicked == 0) {
+                    if(buttonClicked == 0 && welt.aktiverSpieler().getEinheitskarten().size()>2) {
+                        int kartenEntscheidung = 0;
+                        if(!welt.handkartenlimit(welt.aktiverSpieler())){
+                        kartenEntscheidung = JOptionPane.showConfirmDialog(frame, "Möchtest du Karten einlösen?", "Armee verteilen!", JOptionPane.YES_NO_OPTION);
+                        }
+                        if (kartenEntscheidung == 0 ){
+                            String [] karten = new String[welt.aktiverSpieler().getEinheitskarten().size()];
+                            for(int i =0;i<welt.aktiverSpieler().getEinheitskarten().size();i++){
+                                karten[i] = welt.aktiverSpieler().getEinheitskarten().get(i).toString();
+                            }
+                            Einheitskarte karte1 = null;
+                            Einheitskarte karte2 = null;
+                            Einheitskarte karte3 = null;
+                            int kartenAuswahl1 = JOptionPane.showOptionDialog(frame, "Wähle die erste Karte","Karte 1", 0, 3, null, karten, karten[0]);
+                            if (kartenAuswahl1 == 0){
+                                karte1 = welt.aktiverSpieler().getEinheitskarten().get(0);
+                            }
+                            if (kartenAuswahl1 == 1){
+                                karte1 = welt.aktiverSpieler().getEinheitskarten().get(1);
+                            }
+                            if (kartenAuswahl1 == 2){
+                                karte1 = welt.aktiverSpieler().getEinheitskarten().get(2);
+                            }
+                            if (kartenAuswahl1 == 3){
+                                karte1 = welt.aktiverSpieler().getEinheitskarten().get(3);
+                            }
+                            if (kartenAuswahl1 == 4){
+                                karte1 = welt.aktiverSpieler().getEinheitskarten().get(4);
+                            }
+                            int kartenAuswahl2 = JOptionPane.showOptionDialog(frame, "Wähle die zweite Karte","Karte 2", 0, 3, null, karten, karten[0]);
+                            if (kartenAuswahl2 == 0){
+                                karte2 = welt.aktiverSpieler().getEinheitskarten().get(0);
+                            }
+                            if (kartenAuswahl2 == 1){
+                                karte2 = welt.aktiverSpieler().getEinheitskarten().get(1);
+                            }
+                            if (kartenAuswahl2 == 2){
+                                karte2 = welt.aktiverSpieler().getEinheitskarten().get(2);
+                            }
+                            if (kartenAuswahl2 == 3){
+                                karte2 = welt.aktiverSpieler().getEinheitskarten().get(3);
+                            }
+                            if (kartenAuswahl2 == 4){
+                                karte2 = welt.aktiverSpieler().getEinheitskarten().get(4);
+                            }
+                            int kartenAuswahl3 = JOptionPane.showOptionDialog(frame, "Wähle die dritte Karte","Karte 3", 0, 3, null, karten, karten[0]);
+                            if (kartenAuswahl3 == 0){
+                                karte3 = welt.aktiverSpieler().getEinheitskarten().get(0);
+                            }
+                            if (kartenAuswahl3 == 1){
+                                karte3 = welt.aktiverSpieler().getEinheitskarten().get(1);
+                            }
+                            if (kartenAuswahl3 == 2){
+                                karte3 = welt.aktiverSpieler().getEinheitskarten().get(2);
+                            }
+                            if (kartenAuswahl3 == 3){
+                                karte3 = welt.aktiverSpieler().getEinheitskarten().get(3);
+                            }
+                            if (kartenAuswahl3 == 4){
+                                karte3 = welt.aktiverSpieler().getEinheitskarten().get(4);
+                            }
+                            try {
+                                einheiten = welt.armeeVerteilung() + welt.kartenEinlösen(karte1, karte2, karte3);
+                                buttonClicked++;
+                                JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                            } catch (NotYourCardException | SymbolException | DoppelteKarteException ex) {
+                                JOptionPane.showMessageDialog(frame, ex.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }else if(kartenEntscheidung == 1){
+                            buttonClicked++;
+                            JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else if (buttonClicked == 0) {
                         buttonClicked++;
-                        JOptionPane.showMessageDialog(frame, "Du kannst " + welt.aktiverSpieler().getEinheitenRunde() + " verteilen! \n Klicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
                     } else if (buttonClicked == 1) {
                         if (weltPanel.getCountryClicked()) {
                             String id = weltPanel.getLastClickedCountry();
@@ -63,9 +134,9 @@ public class ActionPanel extends JPanel {
                             }
                             if (!stop) {
                                 try {
-                                    int verschobenEinheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Wie viele Einheiten möchtest du einsetzen? \n " + "Max: " + welt.aktiverSpieler().getEinheitenRunde() + " Einheiten.", "Armee verteilen!", JOptionPane.QUESTION_MESSAGE));
+                                    int verschobenEinheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Wie viele Einheiten möchtest du einsetzen? \n" + "Max: " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " Einheiten.", "Armee verteilen!", JOptionPane.QUESTION_MESSAGE));
                                     try {
-                                        welt.aktiverSpieler().setEinheitenRunde(welt.truppenPlatzieren(welt.aktiverSpieler().getEinheitenRunde(), verschobenEinheiten, id));
+                                        welt.aktiverSpieler().setEinheitenRunde(welt.truppenPlatzieren(welt.aktiverSpieler().getEinheitenRunde()+einheiten, verschobenEinheiten, id));
                                         buttonClicked = 0;
                                         weltPanel.setLastClickedCountry(null);
                                         weltPanel.setCountryClicked(false);
@@ -85,15 +156,13 @@ public class ActionPanel extends JPanel {
                         } else {
                             JOptionPane.showMessageDialog(frame, "Klicke erst ein Land an!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
                         }
-
-
                     }
 
                     //Zweite Phase
                 } else if (welt.getPhase() == 1) {
                     if (buttonClicked == 0) {
                         String [] options = {"Angreifen!","Nächste Phase!"};
-                        int auswahl = JOptionPane.showOptionDialog(frame, "Was möchstest du tun ?", "Angriff!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        int auswahl = JOptionPane.showOptionDialog(frame, "Was möchtest du tun ?", "Angriff!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                         if (auswahl == 1) {
                             welt.naechstePhase();
                             frame.revalidate();
@@ -106,7 +175,6 @@ public class ActionPanel extends JPanel {
                     } else if (buttonClicked == 1) {
                         if (weltPanel.getCountryClicked()) {
                             angriffsLand = weltPanel.getLastClickedCountry();
-                            System.out.println(angriffsLand);
                             weltPanel.setLastClickedCountry(null);
                             weltPanel.setCountryClicked(false);
                             boolean stop = false;
@@ -126,7 +194,6 @@ public class ActionPanel extends JPanel {
                     } else if (buttonClicked == 2) {
                         if (weltPanel.getCountryClicked()) {
                             zielLand = weltPanel.getLastClickedCountry();
-                            System.out.println(zielLand);
                             weltPanel.setLastClickedCountry(null);
                             weltPanel.setCountryClicked(false);
                             boolean stop2 = false;
@@ -135,6 +202,7 @@ public class ActionPanel extends JPanel {
                             } catch (IdException | YourLandException | NachbarException exc) {
                                 JOptionPane.showMessageDialog(frame, exc.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
                                 stop2 = true;
+                                buttonClicked = 1;
                             }
                             if (!stop2) {
                                 boolean stop3 = false;
@@ -148,7 +216,7 @@ public class ActionPanel extends JPanel {
                                         möglicheEinheiten = "Min:1 Max:1 Einheiten.";
                                     }
                                     try {
-                                        einheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib die Anzahl der Einheiten ein, welche angreifen sollen! \n Mögliche Einheiten: " + möglicheEinheiten, "Angriff", JOptionPane.PLAIN_MESSAGE));
+                                        einheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib die Anzahl der Einheiten ein, welche angreifen sollen! \nMögliche Einheiten: " + möglicheEinheiten, "Angriff", JOptionPane.PLAIN_MESSAGE));
                                         welt.angreifbar(einheiten, welt.idToLand(angriffsLand), welt.idToLand(zielLand));
                                     } catch (NumberFormatException exce) {
                                         JOptionPane.showMessageDialog(frame, "Es muss eine Zahl eingegeben werden!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
@@ -195,7 +263,7 @@ public class ActionPanel extends JPanel {
                                                             frame.dispose();
                                                             break;
                                                         }
-                                                        int verschieben = Integer.parseInt(JOptionPane.showInputDialog(frame, "Sie haben das Land eingenommen. Wie viele Einheiten sollen zusätzlich in das eroberte Land?" + "\n Gib eine Zahl zwischen 0 und " + (welt.idToLand(angriffsLand).getArmee() - 1) + " ein:", "Gewonnen!", JOptionPane.PLAIN_MESSAGE));
+                                                        int verschieben = Integer.parseInt(JOptionPane.showInputDialog(frame, "Sie haben das Land eingenommen. Wie viele Einheiten sollen zusätzlich in das eroberte Land?" + "\nGib eine Zahl zwischen 0 und " + (welt.idToLand(angriffsLand).getArmee() - 1) + " ein:", "Gewonnen!", JOptionPane.PLAIN_MESSAGE));
                                                         welt.verschieben(welt.idToLand(angriffsLand), welt.idToLand(zielLand), verschieben, true);
                                                     }
                                                     fehler = false;
@@ -228,6 +296,7 @@ public class ActionPanel extends JPanel {
                         if (auswahl == 1) {
                             try {
                                 welt.naechsterZug();
+                                einheiten =0;
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -235,7 +304,7 @@ public class ActionPanel extends JPanel {
                             frame.repaint();
                             aktionsKnopf.setText("Armee Verteilen");
                         }else {
-                            JOptionPane.showMessageDialog(frame, "Du kannst nun Truppen verschieben! \n Klicke das Land an, aus dem die Truppen kommen.", "Armee verschieben!", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Du kannst nun Truppen verschieben! \nKlicke das Land an, aus dem die Truppen kommen.", "Armee verschieben!", JOptionPane.INFORMATION_MESSAGE);
                             buttonClicked++;
                         }
                     }else if(buttonClicked == 1){
@@ -263,7 +332,7 @@ public class ActionPanel extends JPanel {
                             weltPanel.setLastClickedCountry(null);
                             weltPanel.setCountryClicked(false);
                             try {
-                                int verschieben = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib an wie viele Truppen verschieben möchtest.", "Angriff", JOptionPane.PLAIN_MESSAGE));
+                                int verschieben = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib an wie viele Truppen verschieben möchtest. Du kannst bis zu "+ (welt.idToLand(angriffsLand).getArmee() - welt.idToLand(angriffsLand).getBewegteTruppen()-1) +" Truppen aus "+ welt.idToLand(angriffsLand).getName()+ " verschieben!", "Angriff", JOptionPane.PLAIN_MESSAGE));
                                 welt.verschieben(welt.idToLand(angriffsLand),welt.idToLand(zielLand),verschieben,false);
                             } catch (NumberFormatException except) {
                                 JOptionPane.showMessageDialog(frame, "Es muss eine Zahl eingegeben werden!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
@@ -282,6 +351,8 @@ public class ActionPanel extends JPanel {
 
         JButton missionsKnopf = new JButton("Mission");
         add(missionsKnopf, BorderLayout.WEST);
+        JButton kartenKnopf = new JButton("Karten");
+        add(kartenKnopf, BorderLayout.CENTER);
 
         missionsKnopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -290,6 +361,15 @@ public class ActionPanel extends JPanel {
 
             }
         });
+
+        kartenKnopf.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                JOptionPane.showMessageDialog(frame, !welt.aktiverSpieler().getEinheitskarten().isEmpty() ? welt.aktiverSpieler().getEinheitskarten() : "Du hast keine Karten im Besitz!", "Deine Karten!", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+        });
+
     }
 }
 

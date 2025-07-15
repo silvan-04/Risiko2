@@ -3,7 +3,7 @@ package Risiko.ui.gui.panels;
 import Risiko.domain.*;
 import Risiko.domain.exceptions.IdException;
 import Risiko.entities.Land;
-import org.apache.batik.swing.JSVGCanvas;
+// import org.apache.batik.swing.JSVGCanvas;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class WeltPanel extends JPanel {
     private Welt welt;
     private Map<String,String> lands = new HashMap<>();
-    private JSVGCanvas weltCanvas;
+//    private JSVGCanvas weltCanvas;
     private final ImageIcon image;
     private final ImageIcon greyImage;
     private JLabel imageLabel;
