@@ -179,7 +179,7 @@ public class RisikoClientCUI {
            try {
                einheiten = welt.armeeVerteilung() + welt.kartenEinlösen(karte1, karte2, karte3);
                kartenGueltig=true;
-           } catch (NotYourCardException | SymbolException e) {
+           } catch (NotYourCardException | SymbolException | DoppelteKarteException e) {
                System.out.println(e.getMessage());
            }
        } while(!kartenGueltig);

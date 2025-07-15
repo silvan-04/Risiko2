@@ -50,10 +50,14 @@ public class RisikoClientGUI extends JFrame {
         add(weltPanel, BorderLayout.CENTER);
 
         //führt methoden bei Größenänderung vom fenster aus
+        Timer resizeTimer = new Timer(200, evt -> {
+            ((WeltPanel) weltPanel).resizeImage(weltPanel.getSize()); //Größe von Karte,GrayMap und Infos anpassen
+        });
+        resizeTimer.setRepeats(false);
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                ((WeltPanel) weltPanel).resizeImage(weltPanel.getSize()); //Größe von Karte,GrayMap und Infos anpassen
+                resizeTimer.restart();
                 ((SpielerPanel)spielerPanel).heightUpdate(); // anpassen von abständen und größen von spielerinfos
             }
         });

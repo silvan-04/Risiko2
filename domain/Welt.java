@@ -179,7 +179,7 @@ public class Welt {
         aktiverSpieler().getEinheitskarten().remove(karte3);
     }
 
-    public int kartenEinlösen(Einheitskarte karte1, Einheitskarte karte2, Einheitskarte karte3) throws NotYourCardException, SymbolException{
+    public int kartenEinlösen(Einheitskarte karte1, Einheitskarte karte2, Einheitskarte karte3) throws NotYourCardException, SymbolException, DoppelteKarteException{
         try{
             sv.kartenCheck(aktiverSpieler(), karte1, karte2, karte3);
             List<Land> spielerLaender = landAusgabeVonSpieler(aktiverSpieler());
@@ -195,7 +195,7 @@ public class Welt {
             kartenLöschen(karte1, karte2, karte3);
             return einheitenVonKarten(kartenZähler++);
         }
-        catch(NotYourCardException | SymbolException e){
+        catch(NotYourCardException | SymbolException | DoppelteKarteException e){
             throw e;
         }
     }

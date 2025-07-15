@@ -22,7 +22,7 @@ public class Spieler implements Serializable {
     private boolean istAmZug;
     private boolean lebendig;
     private List<Einheitskarte> einheitsKartenListe = new ArrayList<Einheitskarte>();
-    private List<String> farben = new ArrayList<>(Arrays.asList("#1B3B6F","#8E2835","#1B4D3E","#5C215C","#BF5C00","#6F4E37"));
+    private List<String> farben = new ArrayList<>(Arrays.asList("#1B3B6F","#8E2835","#728E4B","#5C215C","#BF5C00","#6F4E37"));
 
     public Spieler(String name, String charBild) {
         this.id = idZaehler++;

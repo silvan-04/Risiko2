@@ -18,6 +18,6 @@ public class Einheitskarte {
     public String getSymbol() { return symbol; }
 
     public String toString(){
-        return (land.getName() + "\n" + symbol);
+        return (land.getName() + " - " + symbol);
     }
 }

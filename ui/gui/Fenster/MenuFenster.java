@@ -135,7 +135,7 @@ public class MenuFenster extends JFrame {
         setupPanel.add(box1);
         JPanel box2 = farbbox(125, 172, 21, 21, "#8E2835");
         setupPanel.add(box2);
-        JPanel box3 = farbbox(125, 212, 21, 21, "#1B4D3E");
+        JPanel box3 = farbbox(125, 212, 21, 21, "#728E4B");
         setupPanel.add(box3);
         box3.setVisible(false);
         JPanel box4 = farbbox(125, 252, 21, 21, "#5C215C");
