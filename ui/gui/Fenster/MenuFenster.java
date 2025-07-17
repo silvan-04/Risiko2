@@ -30,6 +30,7 @@ public class MenuFenster extends JFrame {
 
     public void zeigeSetupPanel() {
         startPanel.setVisible(false);
+        onlineMenu.setVisible(false);
         setupPanel.setVisible(true);
     }
 

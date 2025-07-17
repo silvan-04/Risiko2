@@ -5,6 +5,7 @@ import Risiko.entities.*;
 import Risiko.persistence.FilePersistenceManager;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +16,7 @@ import java.util.Random;
  * @author Juan
  * @version 1
  */
-public class Kartenverwaltung {
+public class Kartenverwaltung implements Serializable {
     private List<Einheitskarte> einheitskarten = new ArrayList<>();
     private List<Missionskarten> missionskarten = new ArrayList<>();
     private List<Einheitskarte> ablageliste = new ArrayList<>();

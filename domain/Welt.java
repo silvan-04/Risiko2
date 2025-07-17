@@ -7,8 +7,10 @@ import Risiko.entities.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serial;
+import java.io.Serializable;
 
-public class Welt {
+public class Welt implements Serializable {
     private Spielerverwaltung sv;
     private Landverwaltung lv;
     private Kartenverwaltung kv;

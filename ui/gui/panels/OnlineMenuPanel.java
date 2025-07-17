@@ -20,6 +20,9 @@ import java.util.List;
 public class OnlineMenuPanel extends JPanel{
     private JLabel name1Label;
     private JTextField name1Field;
+    private JButton playButton;
+    private int mode = 0;
+
 
     public OnlineMenuPanel(MenuFenster parent) {
         super();
@@ -35,34 +38,86 @@ public class OnlineMenuPanel extends JPanel{
         spielBeitreten.setBounds(350, 220, 300, 50);
         zurück.setBounds(350, 290, 300, 50);
 
+
+        JPanel box1 = farbbox(125, 132, 21, 21, "#1B3B6F");
+        add(box1);
+
+        name1Label = new JLabel("1. Spieler:");
+        name1Label.setBounds(50, 130, 100, 25);
+        name1Label.setForeground(Color.white);
+        add(name1Label);
+        name1Field = new JTextField();
+        name1Field.setForeground(Color.white);
+        name1Field.setBackground(Color.decode("#191C21"));
+        name1Field.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+        name1Field.setBounds(160, 130, 200, 25);
+        add(name1Field);
+        box1.setVisible(false);
+        name1Label.setVisible(false);
+        name1Field.setVisible(false);
+        // Play-Button
+        playButton = new JButton("Play");
+        playButton.setBounds(160, 500, 200, 40);
+        playButton.setFont(new Font("Arial", Font.BOLD, 18));
+        playButton.setBackground(Color.lightGray);
+        playButton.setVisible(false);
+        this.add(playButton);
+
+
         neuesSpiel.addActionListener(e ->  {
+            mode = 0;
             neuesSpiel.setVisible(false);
             spielBeitreten.setVisible(false);
-            JPanel box1 = farbbox(125, 132, 21, 21, "#1B3B6F");
-            add(box1);
-            name1Label = new JLabel("1. Spieler:");
-            name1Label.setBounds(50, 130, 100, 25);
-            name1Label.setForeground(Color.white);
-            add(name1Label);
-            name1Field = new JTextField();
-            name1Field.setForeground(Color.white);
-            name1Field.setBackground(Color.decode("#191C21"));
-            name1Field.setBorder(BorderFactory.createLineBorder(Color.darkGray));
-            name1Field.setBounds(160, 130, 200, 25);
-            add(name1Field);
+            box1.setVisible(true);
+            name1Label.setVisible(true);
+            name1Field.setVisible(true);
+            playButton.setVisible(true);
             repaint();
             revalidate();
         });
+
+        spielBeitreten.addActionListener(e -> {
+            mode = 1;
+            neuesSpiel.setVisible(false);
+            spielBeitreten.setVisible(false);
+            box1.setVisible(true);
+            name1Label.setVisible(true);
+            name1Field.setVisible(true);
+            playButton.setVisible(true);
+            repaint();
+            revalidate();
+        });
+
+        playButton.addActionListener(e -> {
+            if (mode == 0) {
+
+                    // Server starten
+                    WarteFenster warte = new WarteFenster(mode);
+
+            } else if (mode == 1) {
+
+                    // warten Fenster
+                    // spiel Start
+
+            }
+
+        });
+
+
+
+
 
         /**
          * geht zurück zu darüber liegendem J-Frame, entfernt alten Inhalt + StartPanel hinzufügen
          */
         zurück.addActionListener(e -> {
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            frame.getContentPane().removeAll();
-            frame.getContentPane().add(new StartMenuPanel((MenuFenster)frame));
-            frame.revalidate();
-            frame.repaint();
+            parent.startVisible();
+            setVisible(false);
+            neuesSpiel.setVisible(true);
+            spielBeitreten.setVisible(true);
+            box1.setVisible(false);
+            name1Label.setVisible(false);
+            name1Field.setVisible(false);
         });
 
         add(neuesSpiel);
@@ -75,6 +130,10 @@ public class OnlineMenuPanel extends JPanel{
         box.setBackground(Color.decode(hex));
         box.setBounds(x, y, w, h);
         return box;
+    }
+
+    public int getMode() {
+        return mode;
     }
 
 }

@@ -358,7 +358,7 @@ public SpielerErstellenPanel(Welt welt, MenuFenster parent) {
 
     zurückButton.addActionListener(e -> {
         parent.startVisible();
-        parent.setVisible(false);
+        setVisible(false);
     });
 }
     /**

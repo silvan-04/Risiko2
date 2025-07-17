@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FilePersistenceManager{
+public class FilePersistenceManager implements Serializable {
     private BufferedReader reader = null;
     private PrintWriter writer = null;
 
