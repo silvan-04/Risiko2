@@ -1,26 +1,27 @@
 package Risiko.ui.gui.panels;
 
+import Risiko.Server.src.GameServer;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class WarteFenster extends JFrame {
     private JProgressBar progressBar;
     private JButton play;
-    private int mode;
+    private boolean mode;
 
-    public WarteFenster(int mode) {
+    public WarteFenster(boolean mode) {
         this.mode = mode;
-        JFrame frame = new JFrame("Warte Fenster");
         progressBar = new JProgressBar(0, 2);
         progressBar.setStringPainted(true);
         play = new JButton("Play");
         play.setEnabled(false);
-        frame.setLayout(new BorderLayout());
-        frame.add(progressBar, BorderLayout.NORTH);
-        frame.add(play, BorderLayout.SOUTH);
-        frame.setSize(300, 200);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(false);
+        setLayout(new BorderLayout());
+        add(progressBar, BorderLayout.NORTH);
+        add(play, BorderLayout.SOUTH);
+        setSize(300, 200);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     /**
@@ -29,10 +30,15 @@ public class WarteFenster extends JFrame {
      */
     public void updateAnzahl(int anzahl) {
         progressBar.setValue(anzahl);
-        if ((anzahl >= 2 && anzahl <= 6) && (mode == 0)) {
+        if ((anzahl >= 2 && anzahl <= 6) && (mode)) {
+            System.out.println(mode + " is im Wartefenster");
             play.setEnabled(true);
+            play.addActionListener(e -> {
+//                GameServer.startGame();
+            });
         }
-        if (mode == 1) {
+        if (!mode) {
+            System.out.println(mode + " is im Wartefenster");
             play.setEnabled(false);
         }
     }

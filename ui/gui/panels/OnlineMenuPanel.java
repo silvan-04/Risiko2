@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import Risiko.Client.GameClient;
+import Risiko.Server.src.GameServer;
 import Risiko.domain.*;
 import Risiko.domain.exceptions.DoppelterNameException;
 import Risiko.domain.exceptions.KeinSpeicherstandException;
@@ -21,7 +24,7 @@ public class OnlineMenuPanel extends JPanel{
     private JLabel name1Label;
     private JTextField name1Field;
     private JButton playButton;
-    private int mode = 0;
+    private boolean mode;
 
 
     public OnlineMenuPanel(MenuFenster parent) {
@@ -36,7 +39,7 @@ public class OnlineMenuPanel extends JPanel{
 
         neuesSpiel.setBounds(350, 150, 300, 50);
         spielBeitreten.setBounds(350, 220, 300, 50);
-        zurück.setBounds(350, 290, 300, 50);
+        zurück.setBounds(50, 500, 100, 40);
 
 
         JPanel box1 = farbbox(125, 132, 21, 21, "#1B3B6F");
@@ -65,7 +68,7 @@ public class OnlineMenuPanel extends JPanel{
 
 
         neuesSpiel.addActionListener(e ->  {
-            mode = 0;
+            mode = true;
             neuesSpiel.setVisible(false);
             spielBeitreten.setVisible(false);
             box1.setVisible(true);
@@ -77,7 +80,7 @@ public class OnlineMenuPanel extends JPanel{
         });
 
         spielBeitreten.addActionListener(e -> {
-            mode = 1;
+            mode = false;
             neuesSpiel.setVisible(false);
             spielBeitreten.setVisible(false);
             box1.setVisible(true);
@@ -89,18 +92,41 @@ public class OnlineMenuPanel extends JPanel{
         });
 
         playButton.addActionListener(e -> {
-            if (mode == 0) {
+            if (mode) {
+                parent.dispose();
+                // Server starten
+                System.out.println("vor gameserver");
+                new Thread(() -> {
+                    GameServer gameServer = null;
+                    try {
+                        gameServer = new GameServer(new Welt());
+                        gameServer.start();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }).start();
 
-                    // Server starten
-                    WarteFenster warte = new WarteFenster(mode);
-
-            } else if (mode == 1) {
-
-                    // warten Fenster
-                    // spiel Start
-
+                System.out.println("nach gameServer");
+                boolean clientConnected = false;
+                do{
+                    try {
+                        System.out.println("vor client");
+                        GameClient client = new GameClient(mode);
+                        clientConnected = true;
+                        System.out.println("nach client");
+                    } catch (IOException | ClassNotFoundException ex) {}
+                }while(!clientConnected);
+                System.out.println("is im Online Panel");
+            } else if (!mode) {
+                parent.setVisible(false);
+                try {
+                    GameClient client = new GameClient(mode);
+                    parent.dispose();
+                } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(this, "Es ist ein Fehler aufgetreten! Ist bereits ein Server erstellt worden ?", " Fehler!", JOptionPane.INFORMATION_MESSAGE);
+                }
+                System.out.println("is im Online Panel");
             }
-
         });
 
 
@@ -132,7 +158,7 @@ public class OnlineMenuPanel extends JPanel{
         return box;
     }
 
-    public int getMode() {
+    public boolean getMode() {
         return mode;
     }
 

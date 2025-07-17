@@ -14,6 +14,7 @@ import Risiko.commands.*;
 import Risiko.domain.Welt;
 import Risiko.ui.gui.Fenster.MenuFenster;
 import Risiko.ui.gui.RisikoClientGUI;
+import Risiko.ui.gui.panels.WarteFenster;
 
 public class GameClient implements Serializable {
 
@@ -34,30 +35,32 @@ public class GameClient implements Serializable {
     private final ObjectInputStream socketIn;
     private final Socket socket;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        try {
-            new GameClient();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+//    /**
+//     * Launch the application.
+//     */
+//    public static void main(String[] args) {
+//        try {
+//            new GameClient();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Create the application.
      */
-    public GameClient() throws IOException, ClassNotFoundException {
+    public GameClient(boolean startServer) throws IOException, ClassNotFoundException {
         // Setup socket
         socket = new Socket("localhost", SOCKET_PORT);
         socketOut = new ObjectOutputStream(socket.getOutputStream());
         socketIn = new ObjectInputStream(socket.getInputStream());
 
+        System.out.println("client socket");
         // initialize UI
-        initialize();
+        initialize(startServer);
         frame.setVisible(true);
 
+        System.out.println("frame erstellt");
         // create and register new player
         String name = JOptionPane.showInputDialog(frame, "Enter your name:", "Add player", JOptionPane.QUESTION_MESSAGE);
         frame.setTitle(name);
@@ -77,10 +80,10 @@ public class GameClient implements Serializable {
     /*
      * Initialize the contents of the frame.
      */
-    private void initialize() throws IOException, ClassNotFoundException {
-        Welt welt = (Welt) socketIn.readObject();
-        System.out.println( welt);
-        frame = new MenuFenster(welt);
+    private void initialize(boolean mode) throws IOException, ClassNotFoundException {
+//        Welt welt = (Welt) socketIn.readObject();
+//        System.out.println( welt);
+        frame = new WarteFenster(mode);
         System.out.println("Hallo");
     }
 
