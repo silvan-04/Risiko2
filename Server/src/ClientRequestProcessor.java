@@ -120,7 +120,7 @@ public class ClientRequestProcessor {
         int actionID = new Random().nextInt(3);
         GameActionEvent.GameActionEventType type = GameActionEvent.GameActionEventType.values()[actionID];
         // Hier: Aktion ausführen...
-        gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(), type));
+        gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(),welt.getSpielerListe().get(((welt.aktiverSpieler().getId())+1)% welt.getSpielerListe().size()), GameActionEvent.GameActionEventType.ATTACK,welt));
 
         // Game over?
     }

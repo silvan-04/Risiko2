@@ -3,6 +3,7 @@ package Risiko.ui.gui;
 import Risiko.Client.GameClient;
 import Risiko.domain.*;
 import Risiko.domain.exceptions.*;
+import Risiko.entities.Spieler;
 import Risiko.ui.gui.Fenster.MenuFenster;
 import Risiko.ui.gui.panels.*;
 
@@ -101,7 +102,7 @@ public class RisikoClientGUI extends JFrame {
         JPanel weltPanel = new WeltPanel(welt); // Panel für Karte und info
         weltPanel.setPreferredSize(new Dimension(1728,972));
 
-        actionPanel = new ActionPanelOnline(welt, this, ((WeltPanel)weltPanel)); // Panel unten mit buttons
+        actionPanel = new ActionPanelOnline(welt, this, ((WeltPanel)weltPanel),gameClient.getSpieler()); // Panel unten mit buttons
         actionPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
 
@@ -147,6 +148,16 @@ public class RisikoClientGUI extends JFrame {
        }else{
            ((ActionPanel)actionPanel).setButton(enabled);
        }
+    }
+    public JButton getActionButton(){
+        if(actionPanel instanceof ActionPanelOnline){
+            return ((ActionPanelOnline)actionPanel).getActionbutton();
+        }else{
+            return ((ActionPanel)actionPanel).getActionbutton();
+        }
+    }
+    public void setSpieler(Spieler spieler){
+        ((ActionPanelOnline)actionPanel).setSpieler(spieler);
     }
 
     public static void main(String[] args) {

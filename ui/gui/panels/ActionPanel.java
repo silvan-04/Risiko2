@@ -375,5 +375,8 @@ public class ActionPanel extends JPanel  implements Action{
     public void setButton(boolean enabled) {
         aktionsKnopf.setEnabled(enabled);
     }
+    public JButton getActionbutton() {
+        return aktionsKnopf;
+    }
 }
 

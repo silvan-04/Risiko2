@@ -145,6 +145,14 @@ public class GameClient implements Serializable {
                 case GAME_STARTED:
                     frame.dispose();
                     this.risikoFrame = new RisikoClientGUI(gce.getWelt(),this);
+                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
+                    ((RisikoClientGUI)risikoFrame).getActionButton().addActionListener(e -> {
+                        try {
+                            socketOut.writeObject(new GameCommand(GameCommandType.GAME_ACTION));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
                     JOptionPane.showMessageDialog(frame,
                             "Das Spiel hat begonnen " + gce.getSpieler().getName() + " beginnt..",
                             "Game Started",
@@ -153,10 +161,10 @@ public class GameClient implements Serializable {
                     // since game event also carries information on next turn
 //                    break;
                 case NEXT_TURN:
+                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
                     int phase = gce.getPhase();
                     System.out.println(phase);
                     Spieler currentSpieler = gce.getSpieler();
-                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
                     System.out.println(player.getIstAmZug());
                     if (currentSpieler.equals(player)) {
                         ((RisikoClientGUI)risikoFrame).setButton(true);
@@ -171,6 +179,7 @@ public class GameClient implements Serializable {
                     }
                     break;
                 case GAME_OVER:
+                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
                     btnGameAction.setEnabled(false);
                     btnNextTurn.setEnabled(false);
                     JOptionPane.showMessageDialog(frame,
@@ -182,14 +191,17 @@ public class GameClient implements Serializable {
                 default:
             }
         } else if (event instanceof GameActionEvent gae) {
+            aktuallisiereSpieler(gae.getWelt().getSpielerListe());
             if (!gae.getSpieler().equals(this.player)) {
                 // Event originates from other player and is relevant for me:
                 switch (gae.getType()) {
                     case ATTACK:
-                        JOptionPane.showMessageDialog(frame,
-                                "You are attacked by player " + gae.getSpieler().getName() + ".",
-                                "Attack!",
-                                JOptionPane.WARNING_MESSAGE);
+                        if(gae.getVerteidiger().equals(this.player)){
+                            JOptionPane.showMessageDialog(frame,
+                                    "You are attacked by player " + gae.getSpieler().getName() + ".",
+                                    "Attack!",
+                                    JOptionPane.WARNING_MESSAGE);
+                        }
                         break;
                     case NEW_OWNER:
                         JOptionPane.showMessageDialog(frame,
@@ -221,5 +233,9 @@ public class GameClient implements Serializable {
                 break;
             }
         }
+        ((RisikoClientGUI)risikoFrame).setSpieler(player);
+    }
+    public Spieler getSpieler(){
+        return player;
     }
 }

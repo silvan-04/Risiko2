@@ -25,6 +25,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
     private String zielLand;
     private int einheiten;
     private JButton aktionsKnopf;
+    private Spieler spieler;
 
     /**
      *
@@ -32,7 +33,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
      * @param frame
      * @param weltPanel
      */
-    public ActionPanelOnline(Welt welt, RisikoClientGUI frame, WeltPanel weltPanel) {
+    public ActionPanelOnline(Welt welt, RisikoClientGUI frame, WeltPanel weltPanel,Spieler spieler) {
         super();
         this.welt = welt;
         this.frame = (JFrame) frame;
@@ -40,6 +41,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
         this.setLayout(new BorderLayout());
         this.buttonClicked = 0;
         this.einheiten = 0;
+        this.spieler = spieler;
 
         aktionsKnopf = new JButton("Armee verteilen!");
         add(aktionsKnopf, BorderLayout.EAST);
@@ -359,7 +361,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
         missionsKnopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                JOptionPane.showMessageDialog(frame, welt.getKartenverwaltung().getMissionskarten().get(welt.aktiverSpieler().getId()).beschreibung(), "Deine Mission!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, welt.getKartenverwaltung().getMissionskarten().get(spieler.getId()).beschreibung(), "Deine Mission!", JOptionPane.INFORMATION_MESSAGE);
 
             }
         });
@@ -367,7 +369,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
         kartenKnopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                JOptionPane.showMessageDialog(frame, !welt.aktiverSpieler().getEinheitskarten().isEmpty() ? welt.aktiverSpieler().getEinheitskarten() : "Du hast keine Karten im Besitz!", "Deine Karten!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, !spieler.getEinheitskarten().isEmpty() ? spieler.getEinheitskarten() : "Du hast keine Karten im Besitz!", "Deine Karten!", JOptionPane.INFORMATION_MESSAGE);
 
             }
         });
@@ -375,6 +377,12 @@ public class ActionPanelOnline extends JPanel  implements Action{
     }
     public void setButton(boolean enabled) {
         aktionsKnopf.setEnabled(enabled);
+    }
+    public JButton getActionbutton() {
+        return aktionsKnopf;
+    }
+    public void setSpieler(Spieler spieler){
+        this.spieler=spieler;
     }
 }
 
