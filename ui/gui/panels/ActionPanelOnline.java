@@ -11,12 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.IOException;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActionPanel extends JPanel  implements Action{
+public class ActionPanelOnline extends JPanel  implements Action{
     private Welt welt;
     private JFrame frame;
     private WeltPanel weltPanel;
@@ -24,7 +24,7 @@ public class ActionPanel extends JPanel  implements Action{
     private String angriffsLand;
     private String zielLand;
     private int einheiten;
-    private JButton aktionsKnopf, kartenKnopf, missionsKnopf;
+    private JButton aktionsKnopf;
 
     /**
      *
@@ -32,7 +32,7 @@ public class ActionPanel extends JPanel  implements Action{
      * @param frame
      * @param weltPanel
      */
-    public ActionPanel(Welt welt, RisikoClientGUI frame, WeltPanel weltPanel) {
+    public ActionPanelOnline(Welt welt, RisikoClientGUI frame, WeltPanel weltPanel) {
         super();
         this.welt = welt;
         this.frame = (JFrame) frame;
@@ -46,12 +46,13 @@ public class ActionPanel extends JPanel  implements Action{
 
         aktionsKnopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 //Erste Phase
                 if (welt.getPhase() == 0) {
                     if(buttonClicked == 0 && welt.aktiverSpieler().getEinheitskarten().size()>2) {
                         int kartenEntscheidung = 0;
                         if(!welt.handkartenlimit(welt.aktiverSpieler())){
-                        kartenEntscheidung = JOptionPane.showConfirmDialog(frame, "Möchtest du Karten einlösen?", "Armee verteilen!", JOptionPane.YES_NO_OPTION);
+                            kartenEntscheidung = JOptionPane.showConfirmDialog(frame, "Möchtest du Karten einlösen?", "Armee verteilen!", JOptionPane.YES_NO_OPTION);
                         }
                         if (kartenEntscheidung == 0 ){
                             String [] karten = new String[welt.aktiverSpieler().getEinheitskarten().size()];
@@ -209,23 +210,23 @@ public class ActionPanel extends JPanel  implements Action{
                                 boolean stop3 = false;
                                 int einheiten = 0;
                                 String möglicheEinheiten = null;
-                                    if (welt.idToLand(angriffsLand).getArmee() > 3) {
-                                        möglicheEinheiten = "Min:1 Max:3 Einheiten.";
-                                    } else if (welt.idToLand(angriffsLand).getArmee() > 2) {
-                                        möglicheEinheiten = "Min:1 Max:2 Einheiten.";
-                                    } else if (welt.idToLand(angriffsLand).getArmee() > 1) {
-                                        möglicheEinheiten = "Min:1 Max:1 Einheiten.";
-                                    }
-                                    try {
-                                        einheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib die Anzahl der Einheiten ein, welche angreifen sollen! \nMögliche Einheiten: " + möglicheEinheiten, "Angriff", JOptionPane.PLAIN_MESSAGE));
-                                        welt.angreifbar(einheiten, welt.idToLand(angriffsLand), welt.idToLand(zielLand));
-                                    } catch (NumberFormatException exce) {
-                                        JOptionPane.showMessageDialog(frame, "Es muss eine Zahl eingegeben werden!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
-                                        stop3 = true;
-                                    } catch (ArmeeException | NachbarException excep) {
-                                        JOptionPane.showMessageDialog(frame, excep.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
-                                        stop3 = true;
-                                    }
+                                if (welt.idToLand(angriffsLand).getArmee() > 3) {
+                                    möglicheEinheiten = "Min:1 Max:3 Einheiten.";
+                                } else if (welt.idToLand(angriffsLand).getArmee() > 2) {
+                                    möglicheEinheiten = "Min:1 Max:2 Einheiten.";
+                                } else if (welt.idToLand(angriffsLand).getArmee() > 1) {
+                                    möglicheEinheiten = "Min:1 Max:1 Einheiten.";
+                                }
+                                try {
+                                    einheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib die Anzahl der Einheiten ein, welche angreifen sollen! \nMögliche Einheiten: " + möglicheEinheiten, "Angriff", JOptionPane.PLAIN_MESSAGE));
+                                    welt.angreifbar(einheiten, welt.idToLand(angriffsLand), welt.idToLand(zielLand));
+                                } catch (NumberFormatException exce) {
+                                    JOptionPane.showMessageDialog(frame, "Es muss eine Zahl eingegeben werden!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
+                                    stop3 = true;
+                                } catch (ArmeeException | NachbarException excep) {
+                                    JOptionPane.showMessageDialog(frame, excep.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
+                                    stop3 = true;
+                                }
                                 if(!stop3){
                                     boolean stop4 = false;
                                     int verteidigen = 0;
@@ -289,7 +290,7 @@ public class ActionPanel extends JPanel  implements Action{
                             JOptionPane.showMessageDialog(frame, "Klicke erst ein Land an!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
                         }
                     }
-                //Dritte Phase
+                    //Dritte Phase
                 } else {
                     if(buttonClicked == 0){
                         String [] options = {"Verschieben!","Nächster Spieler!"};
@@ -350,9 +351,9 @@ public class ActionPanel extends JPanel  implements Action{
 
         });
 
-        missionsKnopf = new JButton("Mission");
+        JButton missionsKnopf = new JButton("Mission");
         add(missionsKnopf, BorderLayout.WEST);
-        kartenKnopf = new JButton("Karten");
+        JButton kartenKnopf = new JButton("Karten");
         add(kartenKnopf, BorderLayout.CENTER);
 
         missionsKnopf.addActionListener(new ActionListener() {

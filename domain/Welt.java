@@ -26,12 +26,8 @@ public class Welt implements Serializable {
     }
 
   // Metohden aus Spielerverwaltung:
-    public void spielerHinzufuegen(String name) throws DoppelterNameException {
-        try{
-            sv.spielerHinzufuegen(name);
-        } catch (DoppelterNameException e) {
-            throw e;
-        }
+    public void spielerHinzufuegen (String name,boolean online) throws DoppelterNameException {
+            sv.spielerHinzufuegen(name,online);
     }
     public boolean getAmZug(int spieler) {
         return sv.getAmZug(spieler);

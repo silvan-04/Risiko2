@@ -6,9 +6,10 @@ import Risiko.entities.*;
 import Risiko.persistence.FilePersistenceManager;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MissionErobereKontinent implements Missionskarten{
+public class MissionErobereKontinent implements Missionskarten, Serializable {
     private String kontinent1Name;
     private String kontinent2Name;
     private boolean zusatzKontinent;

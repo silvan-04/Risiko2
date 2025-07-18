@@ -9,7 +9,7 @@ public class WarteFenster extends JFrame {
     private JProgressBar progressBar;
     private JButton play;
     private boolean mode;
-
+    private JLabel label;
     public WarteFenster(boolean mode) {
         this.mode = mode;
         progressBar = new JProgressBar(0, 2);
@@ -19,6 +19,12 @@ public class WarteFenster extends JFrame {
         setLayout(new BorderLayout());
         add(progressBar, BorderLayout.NORTH);
         add(play, BorderLayout.SOUTH);
+
+        label= new JLabel("");
+        add(label, BorderLayout.WEST);
+
+
+
         setSize(300, 200);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -29,6 +35,7 @@ public class WarteFenster extends JFrame {
      * @param anzahl
      */
     public void updateAnzahl(int anzahl) {
+        this.label.setText(String.valueOf(anzahl));
         progressBar.setValue(anzahl);
         if ((anzahl >= 2 && anzahl <= 6) && (mode)) {
             System.out.println(mode + " is im Wartefenster");
@@ -41,5 +48,13 @@ public class WarteFenster extends JFrame {
             System.out.println(mode + " is im Wartefenster");
             play.setEnabled(false);
         }
+        this.label.repaint();
+        this.label.revalidate();
+    }
+    public void getAnzahl() {
+        updateAnzahl(progressBar.getValue());
+    }
+    public JButton getPlay(){
+        return this.play;
     }
 }

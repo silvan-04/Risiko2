@@ -31,19 +31,30 @@ public class Spielerverwaltung implements Serializable {
      * methode um Spieler zu erstellen und in die Liste hinzuzufügen
      * @param name
      */
-    public void spielerHinzufuegen(String name)throws DoppelterNameException {
-        for(Spieler spieler : spielerListe ){
-            if (Objects.equals(spieler.getName(), name)) {
-                spielerListe.clear();
-                Spieler.setIdZaehler(0);
-                throw new DoppelterNameException();
+    public void spielerHinzufuegen(String name,boolean online)throws DoppelterNameException {
+        if(!online) {
+            for (Spieler spieler : spielerListe) {
+                if (Objects.equals(spieler.getName(), name)) {
+                    spielerListe.clear();
+                    Spieler.setIdZaehler(0);
+                    throw new DoppelterNameException();
+                }
             }
+            Random rand = new Random();
+            int bild = rand.nextInt(charBilder.size());
+            spielerListe.add(new Spieler(name, charBilder.get(bild)));
+            charBilder.remove(bild);
+        }else{
+            for (Spieler spieler : spielerListe) {
+                if (Objects.equals(spieler.getName(), name)) {
+                    throw new DoppelterNameException();
+                }
+            }
+            Random rand = new Random();
+            int bild = rand.nextInt(charBilder.size());
+            spielerListe.add(new Spieler(name, charBilder.get(bild)));
+            charBilder.remove(bild);
         }
-        Random rand = new Random();
-        int bild = rand.nextInt(charBilder.size());
-        spielerListe.add(new Spieler(name,charBilder.get(bild)));
-        charBilder.remove(bild);
-
     }
 
     /**

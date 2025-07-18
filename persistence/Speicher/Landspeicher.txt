@@ -1,6 +1,6 @@
 Alaska
 1
-Juan
+1
 ak
 3
 nt
@@ -10,7 +10,7 @@ f
 0
 Nordwest-Territorien
 1
-Juan
+2
 nt
 4
 ak
@@ -20,8 +20,8 @@ ab
 f
 0
 Alberta
-2
-Juan
+1
+1
 ab
 4
 ak
@@ -32,7 +32,7 @@ f
 0
 Ontario
 1
-Juan
+2
 on
 6
 ab
@@ -45,7 +45,7 @@ f
 0
 Quebec
 1
-Juan
+1
 qb
 3
 gr
@@ -54,8 +54,8 @@ une
 f
 0
 Grönland
-3
-Juan
+1
+2
 gr
 4
 nt
@@ -66,7 +66,7 @@ f
 0
 Weststaaten
 1
-Juan
+1
 unw
 4
 ab
@@ -77,7 +77,7 @@ f
 0
 Oststaaten
 1
-Juan
+1
 une
 4
 on
@@ -88,7 +88,7 @@ f
 0
 Mittelamerika
 1
-Juan
+2
 cm
 3
 unw
@@ -98,7 +98,7 @@ f
 0
 Venezuela
 1
-Juan
+2
 ve
 3
 cm
@@ -107,18 +107,18 @@ pe
 f
 0
 Peru
-10
-Juan
+1
+1
 pe
 3
 ve
 br
 ar
 f
-7
+0
 Brasilien
 1
-Tim
+2
 br
 4
 ve
@@ -129,7 +129,7 @@ f
 0
 Argentinien
 1
-Silvan
+1
 ar
 2
 br
@@ -138,7 +138,7 @@ f
 0
 Island
 1
-Juan
+2
 is
 3
 sk
@@ -148,7 +148,7 @@ f
 0
 Skandinavien
 1
-Silvan
+2
 sk
 4
 is
@@ -159,7 +159,7 @@ f
 0
 Großbritannien
 1
-Tim
+2
 gb
 4
 is
@@ -170,7 +170,7 @@ f
 0
 Nordeuropa
 1
-Juan
+2
 eun
 5
 sk
@@ -181,8 +181,8 @@ eus
 f
 0
 Westeuropa
-5
-Tim
+1
+2
 euw
 4
 gb
@@ -193,7 +193,7 @@ f
 0
 Südeuropa
 1
-Silvan
+1
 eus
 6
 euw
@@ -206,7 +206,7 @@ f
 0
 Ukraine
 1
-Juan
+2
 ua
 6
 sk
@@ -219,7 +219,7 @@ f
 0
 Nordafrika
 1
-Tim
+2
 an
 6
 br
@@ -232,7 +232,7 @@ f
 0
 Ägypten
 1
-Juan
+1
 eg
 4
 an
@@ -243,7 +243,7 @@ f
 0
 Ostafrika
 1
-Tim
+2
 ao
 5
 eg
@@ -255,7 +255,7 @@ f
 0
 Kongo
 1
-Juan
+2
 ko
 3
 an
@@ -265,7 +265,7 @@ f
 0
 Südafrika
 1
-Juan
+1
 as
 3
 ko
@@ -275,7 +275,7 @@ f
 0
 Madagaskar
 1
-Silvan
+2
 ma
 2
 as
@@ -284,7 +284,7 @@ f
 0
 Afghanistan
 1
-Tim
+1
 af
 5
 ua
@@ -295,8 +295,8 @@ in
 f
 0
 China
-7
-Silvan
+1
+2
 ch
 6
 ur
@@ -309,7 +309,7 @@ f
 0
 Indien
 1
-Tim
+1
 in
 4
 me
@@ -320,7 +320,7 @@ f
 0
 Irkutsk
 1
-Tim
+2
 ir
 4
 mn
@@ -331,7 +331,7 @@ f
 0
 Japan
 1
-Silvan
+1
 jp
 2
 ka
@@ -339,8 +339,8 @@ mo
 f
 0
 Kamtschatka
-5
-Tim
+1
+2
 ka
 4
 ya
@@ -351,7 +351,7 @@ f
 0
 Mongolei
 1
-Silvan
+2
 mo
 5
 ch
@@ -362,8 +362,8 @@ ka
 f
 0
 Mittlerer Osten
-9
-Tim
+1
+1
 me
 6
 ua
@@ -376,7 +376,7 @@ f
 0
 Sibirien
 1
-Silvan
+1
 mn
 5
 ur
@@ -387,8 +387,8 @@ ya
 f
 0
 Ural
+8
 1
-Silvan
 ur
 4
 ua
@@ -399,7 +399,7 @@ f
 0
 Jakutien
 1
-Tim
+1
 ya
 3
 mn
@@ -408,8 +408,8 @@ ka
 f
 0
 Südostasien
-8
-Silvan
+1
+1
 aso
 3
 ch
@@ -419,7 +419,7 @@ f
 0
 Indonesien
 1
-Silvan
+1
 id
 3
 aso
@@ -429,7 +429,7 @@ f
 0
 Neuguinea
 1
-Silvan
+1
 ng
 3
 id
@@ -439,7 +439,7 @@ f
 0
 Westaustralien
 1
-Silvan
+1
 auw
 3
 id
@@ -448,8 +448,8 @@ auo
 f
 0
 Ostaustralien
+1
 2
-Silvan
 auo
 2
 ng

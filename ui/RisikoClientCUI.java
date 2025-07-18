@@ -44,7 +44,7 @@ public class RisikoClientCUI {
            boolean nameGueltig=false;
            do{
                try{
-                    welt.spielerHinzufuegen(liesEingabe());
+                    welt.spielerHinzufuegen(liesEingabe(), false);
                     nameGueltig=true;
                }catch(DoppelterNameException e){
                    System.out.println(e.getMessage());

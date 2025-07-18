@@ -7,6 +7,7 @@ import Risiko.entities.Spieler;
 import Risiko.domain.Welt;
 import Risiko.events.GameActionEvent;
 import Risiko.events.GameControlEvent;
+import Risiko.events.GameEvent;
 
 import java.io.*;
 import java.net.Socket;
@@ -46,12 +47,13 @@ public class ClientRequestProcessor {
             Object obj = in.readObject();
             if (obj instanceof GameCommand cmd) {
                 switch (cmd.getType()) {
+                    case GameCommandType.GAME_START -> startGame();
                     case GameCommandType.NEXT_TURN -> nextTurn();
                     case GameCommandType.GAME_ACTION -> someGameAction();
                 }
             } else if (obj instanceof Spieler player) {
-                Spieler spieler = addPlayer(player.getName());
-                out.writeObject(spieler);
+                addPlayer(player.getName());
+
             }
         }
     }
@@ -63,15 +65,22 @@ public class ClientRequestProcessor {
      * (non-Javadoc)
      * @see prog2.vl.gameloop.common.ServerRemote#addPlayer(prog2.vl.gameloop.common.Spieler)
      */
-    public Spieler addPlayer(String spieler) throws IOException, DoppelterNameException {
-        welt.spielerHinzufuegen(spieler);
+    public void addPlayer(String spieler) throws IOException {
+        try {
+            welt.spielerHinzufuegen(spieler,true);
+            out.writeObject(true);
+            out.writeObject(welt.getSpielerListe().getLast());
+            gameServer.notifyListeners(new GameControlEvent(welt,GameControlEvent.GameControlEventType.PLAYER_JOINED));
+        }catch(DoppelterNameException e){
+            out.writeObject(false);
+        }
 
         if (welt.getSpielerListe().size() == 6) {
             startGame();
         }else if (welt.getSpielerListe().size() > NO_OF_PLAYERS-1) {
             // signal an spieler1 (server erstellt) das er starten kann
+            gameServer.notifyListeners(new GameControlEvent(welt, GameControlEvent.GameControlEventType.GAME_CAN_START));
         }
-        return welt.getSpielerListe().getLast();
     }
 
     public void startGame() throws IOException {

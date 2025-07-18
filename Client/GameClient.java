@@ -2,6 +2,7 @@ package Risiko.Client;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,10 +24,11 @@ public class GameClient implements Serializable {
 
     private static final int SOCKET_PORT = 8080;
 
-    private final Spieler player;
+    private Spieler player = null;
 
     // UI
     private JFrame frame;
+    private JFrame risikoFrame;
     private JButton btnGameAction;
     private JButton btnNextTurn;
     private JLabel lblStatus;
@@ -49,7 +51,7 @@ public class GameClient implements Serializable {
     /**
      * Create the application.
      */
-    public GameClient(boolean startServer) throws IOException, ClassNotFoundException {
+    public GameClient(boolean startServer,String name) throws IOException, ClassNotFoundException {
         // Setup socket
         socket = new Socket("localhost", SOCKET_PORT);
         socketOut = new ObjectOutputStream(socket.getOutputStream());
@@ -59,15 +61,30 @@ public class GameClient implements Serializable {
         // initialize UI
         initialize(startServer);
         frame.setVisible(true);
+        ((WarteFenster)frame).getPlay().addActionListener(e ->  {
+            sendCommand(new GameCommand(GameCommandType.GAME_START));
+        });
 
         System.out.println("frame erstellt");
+        frame.setTitle("Warte auf Spielbegin!");
         // create and register new player
-        String name = JOptionPane.showInputDialog(frame, "Enter your name:", "Add player", JOptionPane.QUESTION_MESSAGE);
-        frame.setTitle(name);
-        Spieler spieler = new Spieler(name);
-
-        // Send new player object to socket server
-        socketOut.writeObject(spieler);
+        boolean doppelt = false;
+        boolean first = true;
+        do {
+            Spieler spieler;
+            if(!first){
+                String name2 = JOptionPane.showInputDialog(frame, "Es existiert schon ein Spieler mit diesem Namen!\nGib einen neuen Namen ein!", "Doppelter Name!", JOptionPane.QUESTION_MESSAGE);
+                spieler = new Spieler(name2);
+            }else{
+                spieler = new Spieler(name);
+            }
+            // Send new player object to socket server
+            socketOut.writeObject(spieler);
+            doppelt = (boolean)socketIn.readObject();
+            System.out.println(doppelt);
+            first=false;
+        }while(!doppelt);
+        System.out.println("nach schleife");
         socketOut.flush();
         player = (Spieler) socketIn.readObject();
         System.out.println(player.getName());
@@ -121,31 +138,36 @@ public class GameClient implements Serializable {
     public void handleGameEvent(GameEvent event) {
         if (event instanceof GameControlEvent gce) {
             switch (gce.getType()) {
+                case PLAYER_JOINED:
+
+                    ((WarteFenster)frame).updateAnzahl(gce.getPlayerCount());
+                    break;
                 case GAME_STARTED:
+                    frame.dispose();
+                    this.risikoFrame = new RisikoClientGUI(gce.getWelt(),this);
                     JOptionPane.showMessageDialog(frame,
-                            "The game has just begun... It's player " + gce.getSpieler().getName() + "'s turn.",
+                            "Das Spiel hat begonnen " + gce.getSpieler().getName() + " beginnt..",
                             "Game Started",
                             JOptionPane.INFORMATION_MESSAGE);
                     // break statement deliberately omitted,
                     // since game event also carries information on next turn
-                    //	  break;
+//                    break;
                 case NEXT_TURN:
-                    Welt welt = gce.getWelt();
-                    System.out.println(welt.getPhase());
+                    int phase = gce.getPhase();
+                    System.out.println(phase);
                     Spieler currentSpieler = gce.getSpieler();
+                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
+                    System.out.println(player.getIstAmZug());
                     if (currentSpieler.equals(player)) {
+                        ((RisikoClientGUI)risikoFrame).setButton(true);
                         // It is this player's turn!
                         // Update UI, e.g. enable UI elements such as buttons
-                        System.out.println("Game Action: Spieler " + currentSpieler.getName() + " in Phase " + welt.getPhase());
-                        lblStatus.setText("Game Action: Spieler " + currentSpieler.getName() + " in Phase " + welt.getPhase());
-                        btnGameAction.setEnabled(true);
-                        btnNextTurn.setEnabled(true);
+                        System.out.println("Game Action: Spieler " + currentSpieler.getName() + " in Phase " + phase);
                     } else {
+                        ((RisikoClientGUI)risikoFrame).setButton(false);
                         // It is another player's turn!
                         // Nothing to do; just deactivate UI...
-                        lblStatus.setText("Waiting for my turn...");
-                        btnGameAction.setEnabled(false);
-                        btnNextTurn.setEnabled(false);
+
                     }
                     break;
                 case GAME_OVER:
@@ -192,4 +214,12 @@ public class GameClient implements Serializable {
         }
     }
 
+    public void aktuallisiereSpieler(List<Spieler> list){
+        for(Spieler spieler : list){
+            if(this.player.getName().equals(spieler.getName())){
+                this.player=spieler;
+                break;
+            }
+        }
+    }
 }

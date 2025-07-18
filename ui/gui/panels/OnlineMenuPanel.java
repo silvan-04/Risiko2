@@ -92,41 +92,47 @@ public class OnlineMenuPanel extends JPanel{
         });
 
         playButton.addActionListener(e -> {
-            if (mode) {
-                parent.dispose();
-                // Server starten
-                System.out.println("vor gameserver");
-                new Thread(() -> {
-                    GameServer gameServer = null;
-                    try {
-                        gameServer = new GameServer(new Welt());
-                        gameServer.start();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }).start();
-
-                System.out.println("nach gameServer");
-                boolean clientConnected = false;
-                do{
-                    try {
-                        System.out.println("vor client");
-                        GameClient client = new GameClient(mode);
-                        clientConnected = true;
-                        System.out.println("nach client");
-                    } catch (IOException | ClassNotFoundException ex) {}
-                }while(!clientConnected);
-                System.out.println("is im Online Panel");
-            } else if (!mode) {
-                parent.setVisible(false);
-                try {
-                    GameClient client = new GameClient(mode);
+            String name = name1Field.getText();
+            if(!name.equals("")){
+                if (mode) {
                     parent.dispose();
-                } catch (IOException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(this, "Es ist ein Fehler aufgetreten! Ist bereits ein Server erstellt worden ?", " Fehler!", JOptionPane.INFORMATION_MESSAGE);
+                    // Server starten
+                    System.out.println("vor gameserver");
+                    new Thread(() -> {
+                        GameServer gameServer = null;
+                        try {
+                            gameServer = new GameServer(new Welt());
+                            gameServer.start();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }).start();
+
+                    System.out.println("nach gameServer");
+                    boolean clientConnected = false;
+                    do{
+                        try {
+                            System.out.println("vor client");
+                            GameClient client = new GameClient(mode,name);
+                            clientConnected = true;
+                            System.out.println("nach client");
+                        } catch (IOException | ClassNotFoundException ex) {}
+                    }while(!clientConnected);
+                    System.out.println("is im Online Panel");
+                } else if (!mode) {
+                    parent.setVisible(false);
+                    try {
+                        GameClient client = new GameClient(mode,name);
+                        parent.dispose();
+                    } catch (IOException | ClassNotFoundException ex) {
+                        JOptionPane.showMessageDialog(this, "Es ist ein Fehler aufgetreten! Ist bereits ein Server erstellt worden ?", " Fehler!", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    System.out.println("is im Online Panel");
                 }
-                System.out.println("is im Online Panel");
+            }else{
+               JOptionPane.showMessageDialog(this, "Es muss ein Name eingegeben werden!", "Keine Eingabe!", JOptionPane.ERROR_MESSAGE);
             }
+
         });
 
 

@@ -6,9 +6,10 @@ import Risiko.entities.*;
 import Risiko.persistence.FilePersistenceManager;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MissionErobereLänder implements Missionskarten{
+public class MissionErobereLänder implements Missionskarten, Serializable {
     boolean nurLänder;
     Spieler spieler;
     Landverwaltung lv;

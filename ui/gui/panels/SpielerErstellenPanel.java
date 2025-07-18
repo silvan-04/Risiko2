@@ -325,7 +325,7 @@ public SpielerErstellenPanel(Welt welt, MenuFenster parent) {
         if (richtigeEingabe) {
             for (String name : namen) {
                 try {
-                    welt.spielerHinzufuegen(name);
+                    welt.spielerHinzufuegen(name,false);
                     spielerErstellt = true;
                 } catch (DoppelterNameException ex) {
                     spielerErstellt = false;

@@ -4,8 +4,10 @@ import Risiko.domain.*;
 import Risiko.domain.exceptions.*;
 import Risiko.persistence.FilePersistenceManager;
 
+import java.io.Serializable;
 
-public class MissionEliminiereSpieler implements Missionskarten{
+
+public class MissionEliminiereSpieler implements Missionskarten, Serializable {
     private Spieler spieler;
     private Spieler zielspieler;
 
