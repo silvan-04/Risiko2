@@ -1,5 +1,7 @@
 package Risiko.commands;
 
+import Risiko.entities.Spieler;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -8,24 +10,30 @@ public class GameCommand implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final GameCommandType type;
-    private final Object payload;
+    private final int payload;
+    private final Spieler spieler;
 
     public GameCommand(GameCommandType type) {
         this.type = type;
-        this.payload = null;
+        this.payload = 0;
+        this.spieler = null;
     }
 
-    public GameCommand(GameCommandType type, Object payload) {
+    public GameCommand(GameCommandType type, int payload,Spieler spieler) {
         this.type = type;
         this.payload = payload;
+        this.spieler=spieler;
     }
 
     public GameCommandType getType() {
         return type;
     }
 
-    public Object getPayload() {
+    public int getPayload() {
         return payload;
+    }
+    public Spieler getSpieler() {
+        return spieler;
     }
 }
 

@@ -16,6 +16,7 @@ public class Land  implements Serializable {
     private List<String> nachbarLaender;
     private boolean erobert;
     private int bewegteTruppen;
+    //Konstruktoren
     public Land(String name,String id) {
         this.name = name;
         this.armee=1;
@@ -33,7 +34,7 @@ public class Land  implements Serializable {
         this.erobert=erobert;
         this.bewegteTruppen=bewegteTruppen;
     }
-
+    //Getter
    public String getName() {
         return name;
    }
@@ -55,6 +56,7 @@ public class Land  implements Serializable {
     public boolean getErobert(){
         return erobert;
     };
+    //Setter
     public void setErobert(boolean erobert){
         this.erobert=erobert;
     }
@@ -70,6 +72,7 @@ public class Land  implements Serializable {
     public void setBewegteTruppen(int bewegteTruppen) {
         this.bewegteTruppen += bewegteTruppen;
     }
+    //toString-Methode
     public String toString(){
         return (this.name+" mit der ID: \"" + this.id +"\", gehört "+ this.besitzer.getName() + " mit " + this.armee + " Einheiten.");
     }

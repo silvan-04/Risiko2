@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class FilePersistenceManager implements Serializable {
     private BufferedReader reader = null;
-    private PrintWriter writer = null;
+    private transient PrintWriter writer = null;
 
     /**
      * Öffnet die Datei und liest sie zeilenweise aus.

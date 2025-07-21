@@ -8,17 +8,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import Risiko.events.GameEvent;
-import Risiko.commands.*;
-import Risiko.persistence.*;
 import Risiko.domain.*;
 import Risiko.domain.exceptions.*;
-import Risiko.entities.*;
-import Risiko.ui.gui.RisikoClientGUI;
-import Risiko.events.*;
-import javax.swing.*;
 
 public class GameServer implements Serializable {
 

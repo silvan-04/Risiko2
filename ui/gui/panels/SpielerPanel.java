@@ -43,4 +43,18 @@ public class SpielerPanel extends JPanel {
         this.repaint();
     }
 
+    public void updateSpieler(Welt welt){
+        this.welt = welt;
+        removeAll();
+        add(Box.createVerticalStrut(this.getHeight()/20));
+        for(Spieler spieler: welt.getSpielerListe()){ //Erstellt Panel für jeden Spieler
+            SpielerEinzelPanel panel = new SpielerEinzelPanel(spieler,welt,this.getSize());
+            panel.setPreferredHeight(this.getWidth(),this.getHeight()/10);
+            this.add(panel);
+            this.add(Box.createVerticalStrut(this.getHeight()/20)); //abstand zwischen spielerPanels
+        }
+        revalidate();
+        repaint();
+    }
+
 }

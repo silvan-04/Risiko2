@@ -26,7 +26,11 @@ public class OnlineMenuPanel extends JPanel{
     private JButton playButton;
     private boolean mode;
 
-
+    /**
+     * Erstellt das Panel für das Onlinespiel. Hier kann man ein neues Spiel erstellen oder einem bestehenden beitreten.
+     * Anschließend gibt man einen Namen ein und drückt „Play“.
+     * @param parent das übergeordnete Fenster oder der Container, in dem das Panel angezeigt wird
+     */
     public OnlineMenuPanel(MenuFenster parent) {
         super();
         this.setLayout(null);
@@ -41,11 +45,7 @@ public class OnlineMenuPanel extends JPanel{
         spielBeitreten.setBounds(350, 220, 300, 50);
         zurück.setBounds(50, 500, 100, 40);
 
-
-        JPanel box1 = farbbox(125, 132, 21, 21, "#1B3B6F");
-        add(box1);
-
-        name1Label = new JLabel("1. Spieler:");
+        name1Label = new JLabel("  Spieler:");
         name1Label.setBounds(50, 130, 100, 25);
         name1Label.setForeground(Color.white);
         add(name1Label);
@@ -55,7 +55,7 @@ public class OnlineMenuPanel extends JPanel{
         name1Field.setBorder(BorderFactory.createLineBorder(Color.darkGray));
         name1Field.setBounds(160, 130, 200, 25);
         add(name1Field);
-        box1.setVisible(false);
+
         name1Label.setVisible(false);
         name1Field.setVisible(false);
         // Play-Button
@@ -66,12 +66,10 @@ public class OnlineMenuPanel extends JPanel{
         playButton.setVisible(false);
         this.add(playButton);
 
-
         neuesSpiel.addActionListener(e ->  {
             mode = true;
             neuesSpiel.setVisible(false);
             spielBeitreten.setVisible(false);
-            box1.setVisible(true);
             name1Label.setVisible(true);
             name1Field.setVisible(true);
             playButton.setVisible(true);
@@ -83,7 +81,6 @@ public class OnlineMenuPanel extends JPanel{
             mode = false;
             neuesSpiel.setVisible(false);
             spielBeitreten.setVisible(false);
-            box1.setVisible(true);
             name1Label.setVisible(true);
             name1Field.setVisible(true);
             playButton.setVisible(true);
@@ -91,6 +88,11 @@ public class OnlineMenuPanel extends JPanel{
             revalidate();
         });
 
+        /**
+         * Spieler 1 startet den GameServer und tritt ihm bei.
+         * Die restlichen Spieler treten dem Server bei.
+         * Prüft, ob bereits ein Server existiert, und fordert zur Namenseingabe auf.
+         */
         playButton.addActionListener(e -> {
             String name = name1Field.getText();
             if(!name.equals("")){
@@ -107,18 +109,15 @@ public class OnlineMenuPanel extends JPanel{
                             throw new RuntimeException(ex);
                         }
                     }).start();
-
-                    System.out.println("nach gameServer");
                     boolean clientConnected = false;
                     do{
                         try {
-                            System.out.println("vor client");
                             GameClient client = new GameClient(mode,name);
                             clientConnected = true;
-                            System.out.println("nach client");
-                        } catch (IOException | ClassNotFoundException ex) {}
+                        } catch (IOException | ClassNotFoundException ex) {} catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }while(!clientConnected);
-                    System.out.println("is im Online Panel");
                 } else if (!mode) {
                     parent.setVisible(false);
                     try {
@@ -126,8 +125,9 @@ public class OnlineMenuPanel extends JPanel{
                         parent.dispose();
                     } catch (IOException | ClassNotFoundException ex) {
                         JOptionPane.showMessageDialog(this, "Es ist ein Fehler aufgetreten! Ist bereits ein Server erstellt worden ?", " Fehler!", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
                     }
-                    System.out.println("is im Online Panel");
                 }
             }else{
                JOptionPane.showMessageDialog(this, "Es muss ein Name eingegeben werden!", "Keine Eingabe!", JOptionPane.ERROR_MESSAGE);
@@ -135,19 +135,16 @@ public class OnlineMenuPanel extends JPanel{
 
         });
 
-
-
-
-
         /**
-         * geht zurück zu darüber liegendem J-Frame, entfernt alten Inhalt + StartPanel hinzufügen
+         * Kehrt zum übergeordneten JFrame zurück, entfernt den bisherigen Inhalt
+         * und fügt das StartPanel hinzu.
          */
+
         zurück.addActionListener(e -> {
             parent.startVisible();
             setVisible(false);
             neuesSpiel.setVisible(true);
             spielBeitreten.setVisible(true);
-            box1.setVisible(false);
             name1Label.setVisible(false);
             name1Field.setVisible(false);
         });
@@ -155,17 +152,9 @@ public class OnlineMenuPanel extends JPanel{
         add(neuesSpiel);
         add(spielBeitreten);
         add(zurück);
-
-    }
-    private JPanel farbbox(int x, int y, int w, int h, String hex) {
-        JPanel box = new JPanel();
-        box.setBackground(Color.decode(hex));
-        box.setBounds(x, y, w, h);
-        return box;
     }
 
     public boolean getMode() {
         return mode;
     }
-
 }

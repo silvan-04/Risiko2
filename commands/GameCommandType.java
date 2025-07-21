@@ -5,5 +5,7 @@ public enum GameCommandType {
     NEXT_TURN,
     GAME_ACTION,
     ADD_PLAYER,
+    VERTEIDIGUNG,
+    VERTERIDIGUNGANTWORT
 
 }

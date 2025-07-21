@@ -297,7 +297,7 @@ public class ActionPanel extends JPanel  implements Action{
                         if (auswahl == 1) {
                             try {
                                 welt.naechsterZug();
-                                einheiten =0;
+                                einheiten = 0;
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }

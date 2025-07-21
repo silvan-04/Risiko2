@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Klasse zur Verwaltung von Einheitskarten
- *
+ * erstellt, mischt und verteilt Einheits- und Missionskarten
+ * verwaltet Nachzieh- und Ablagestapel, überprüft Kartenlimits, wandelt Karten-IDs um und sichert bzw. lädt den Kartenzustand über den FilePersistenceManager
  * @author Juan
  * @version 1
  */
@@ -33,8 +33,11 @@ public class Kartenverwaltung implements Serializable {
     public List<Einheitskarte> getablageliste() { return ablageliste;}
 
     /**
+     * Erstellt das Einheitskarten-Deck mit je 14 Kanonen-, Soldaten- und Reiterkarten
+     * und verteilt anschließend an jeden Spieler aus spielerList eine zufällige
+     * Missionskarte aus neun vordefinierten Typen.
      *
-     * @param spielerList
+     * @param spielerList Liste der Spieler, die jeweils eine Missionskarte erhalten
      */
     public void kartenErstellung(List<Spieler> spielerList){
         Random r = new Random();
@@ -98,12 +101,13 @@ public class Kartenverwaltung implements Serializable {
                 }
             }
         }
-
-
-
-
     }
 
+    /**
+     * Zieht zufällig eine Einheitskarte und befüllt bei Leerung den Stapel aus dem Ablagestapel.
+     *
+     * @return gezogene Einheitskarte
+     */
     public Einheitskarte getZufälligeKarte(){
         Random r = new Random();
         int kartenIndex = r.nextInt(einheitskarten.size());
@@ -116,6 +120,12 @@ public class Kartenverwaltung implements Serializable {
         return temp;
     }
 
+    /**
+     * Gibt true zurück, wenn der Spieler 5 oder mehr Einheitskarten besitzt.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn das Handkartenlimit erreicht ist
+     */
     public boolean handkartenlimit(Spieler spieler){
         if (spieler.getEinheitskarten().size() >= 5){
             return true;
@@ -124,6 +134,14 @@ public class Kartenverwaltung implements Serializable {
         }
     }
 
+    /**
+     * Sucht beim gegebenen Spieler anhand der Land-ID die zugehörige Einheitskarte.
+     *
+     * @param id       die ID des Landes
+     * @param spieler  der Spieler, dessen Karten durchsucht werden
+     * @return         die gefundene Einheitskarte
+     * @throws NotYourCardException wenn der Spieler keine Karte mit dieser ID besitzt
+     */
     public Einheitskarte idToKarte(String id, Spieler spieler) throws IdException, NotYourCardException {
         for(int i =0;i<spieler.getEinheitskarten().size();i++){
             if(spieler.getEinheitskarten().get(i).getLand().getID().equals(id)){
@@ -133,6 +151,14 @@ public class Kartenverwaltung implements Serializable {
         throw new NotYourCardException();
     }
 
+    /**
+     * Speichert Einheitskartenstapel, Missionskarten, Ablagestapel und
+     * die Einheitskarten jedes Spielers in separaten Dateien.
+     *
+     * @param spielerList Liste der Spieler, deren Karten ebenfalls gesichert werden
+     * @return true, wenn alle Speichervorgänge erfolgreich waren
+     * @throws IOException falls ein Fehler beim Schreiben der Dateien auftritt
+     */
     public boolean speichereKarten(List<Spieler>spielerList) throws IOException {
         boolean gespeichert=true;
         //Einheitskartenstapel speichern
@@ -165,6 +191,15 @@ public class Kartenverwaltung implements Serializable {
         pm.close();
         return gespeichert;
     }
+
+    /**
+     * Lädt den Einheitskartenstapel, die Missionskarten, den Ablagestapel und
+     * zuletzt die Einheitskarten aller Spieler aus den entsprechenden Persistenzdateien.
+     *
+     * @param spielerList Liste der Spieler, deren Karten geladen werden
+     * @throws KeinSpeicherstandException wenn eine der Speicherdateien nicht existiert oder ungültig ist
+     * @throws IOException               bei allgemeinen Ein-/Ausgabefehlern
+     */
     public void ladeKarten(List<Spieler>spielerList) throws KeinSpeicherstandException, IOException {
        // Lade Einheitskartenstapel
         pm.openForReading("persistence/Speicher/Einheitskartenspeicher.txt");
@@ -175,7 +210,7 @@ public class Kartenverwaltung implements Serializable {
             pm.close();
             throw e;
         }
-        //Läd missionen der Spieler
+        //Lädt missionen der Spieler
         pm.openForReading("persistence/Speicher/Missionspeicher.txt");
         this.missionskarten.clear();
         try {
@@ -187,7 +222,7 @@ public class Kartenverwaltung implements Serializable {
             throw e;
         }
         pm.close();
-        //läd Ablagestapel
+        //lädt Ablagestapel
         pm.openForReading("persistence/Speicher/Ablagestapelspeicher.txt");
         this.ablageliste.clear();
         try{
@@ -197,7 +232,7 @@ public class Kartenverwaltung implements Serializable {
             throw e;
         }
         pm.close();
-        //Läd Einheitskarten innerhalb der spieler
+        //Lädt Einheitskarten innerhalb der spieler
         pm.openForReading("persistence/Speicher/SpielerEinheitskarten.txt");
         try {
             for (Spieler spieler : spielerList) {
@@ -209,5 +244,4 @@ public class Kartenverwaltung implements Serializable {
         }
         pm.close();
     }
-
 }

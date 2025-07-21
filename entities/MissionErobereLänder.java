@@ -28,7 +28,7 @@ public class MissionErobereLänder implements Missionskarten, Serializable {
     }
 
     /**
-     * Checkt ob man die Mission mit den 24 oder 18 Ländern mit 2 Einheiten erfüllen muss und erfüllt hat
+     * Zum überprüfen, ob man die Mission mit den 24 oder 18 Ländern mit 2 Einheiten erfüllen muss und erfüllt hat
      * @return
      */
     public boolean istErfuellt() {

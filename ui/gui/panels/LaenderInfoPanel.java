@@ -25,6 +25,12 @@ public class LaenderInfoPanel extends JPanel {
         repaint();
     }
 
+    public void updateWelt(Welt welt){
+        this.welt=welt;
+        revalidate();
+        repaint();
+    }
+
 
 
 

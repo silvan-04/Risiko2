@@ -24,7 +24,7 @@ public class MissionEliminiereSpieler implements Missionskarten, Serializable {
     }
 
     /**
-     * Zum checken ob, ZielSpieler noch lebendig ist.
+     * Zum überprüfen, ob der ZielSpieler noch lebendig ist.
      * @return
      */
     public boolean istErfuellt() {

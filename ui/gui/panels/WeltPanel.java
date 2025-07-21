@@ -179,5 +179,11 @@ public class WeltPanel extends JPanel {
         this.lastClickedCountry =  id;
     }
 
+    public void updateWelt(Welt welt){
+        this.welt=welt;
+        ((LaenderInfoPanel)buttons).updateWelt(welt);
+        revalidate();
+        repaint();
+    }
 }
 

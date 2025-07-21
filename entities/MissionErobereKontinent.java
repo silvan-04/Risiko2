@@ -51,7 +51,7 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
     }
 
     /**
-     * zum checken, ob die vorgegeben Kontinente eingenommen wurden oder auch ob der Kontinent nach Wahl schon eingenommen wurde.
+     * Zum überprüfen, ob die vorgegebenen Kontinente eingenommen wurden oder auch ob der Kontinent nach Wahl schon eingenommen wurde.
      * @return
      */
     public boolean istErfuellt() {

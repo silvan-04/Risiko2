@@ -15,7 +15,10 @@ import java.io.IOException;
 
 public class RisikoClientGUI extends JFrame {
     private Welt welt;
-    private JPanel actionPanel;
+    private final JPanel actionPanel;
+    private final JPanel weltPanel;
+    private final JPanel spielerPanel;
+    private GameClient gameClient ;
     public RisikoClientGUI(Welt welt){
         super();
         setTitle("Risiko");
@@ -36,10 +39,10 @@ public class RisikoClientGUI extends JFrame {
         this.setBackground(Color.black);
         this.setLayout( new BorderLayout());
 
-        JPanel spielerPanel = new SpielerPanel(welt); // Spieler info Rechts
+        spielerPanel = new SpielerPanel(welt); // Spieler info Rechts
         spielerPanel.setBackground(Color.black);
 
-        JPanel weltPanel = new WeltPanel(welt); // Panel für Karte und info
+        this.weltPanel = new WeltPanel(welt); // Panel für Karte und info
         weltPanel.setPreferredSize(new Dimension(1728,972));
 
         actionPanel = new ActionPanel(welt, this, ((WeltPanel)weltPanel)); // Panel unten mit buttons
@@ -80,7 +83,7 @@ public class RisikoClientGUI extends JFrame {
         super();
         setTitle("Risiko");
         this.welt = welt;
-
+        this.gameClient = gameClient;
 
 //        UIManager.put("Panel.background", Color.DARK_GRAY);
 //        UIManager.put("OptionPane.background", Color.LIGHT_GRAY);
@@ -96,10 +99,10 @@ public class RisikoClientGUI extends JFrame {
         this.setBackground(Color.black);
         this.setLayout( new BorderLayout());
 
-        JPanel spielerPanel = new SpielerPanel(welt); // Spieler info Rechts
+        spielerPanel = new SpielerPanel(welt); // Spieler info Rechts
         spielerPanel.setBackground(Color.black);
 
-        JPanel weltPanel = new WeltPanel(welt); // Panel für Karte und info
+        weltPanel = new WeltPanel(welt); // Panel für Karte und info
         weltPanel.setPreferredSize(new Dimension(1728,972));
 
         actionPanel = new ActionPanelOnline(welt, this, ((WeltPanel)weltPanel),gameClient.getSpieler()); // Panel unten mit buttons
@@ -137,9 +140,8 @@ public class RisikoClientGUI extends JFrame {
     }
 
     public void neueWelt(Welt welt){
-        this.welt = welt;
-        this.repaint();
-        this.revalidate();
+        ((SpielerPanel)spielerPanel).updateSpieler(welt);
+        ((WeltPanel)weltPanel).updateWelt(welt);
     }
 
     public void setButton(boolean enabled){
@@ -158,6 +160,10 @@ public class RisikoClientGUI extends JFrame {
     }
     public void setSpieler(Spieler spieler){
         ((ActionPanelOnline)actionPanel).setSpieler(spieler);
+    }
+
+    public JPanel getWeltPanel() {
+        return weltPanel;
     }
 
     public static void main(String[] args) {

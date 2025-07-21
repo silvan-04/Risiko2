@@ -17,9 +17,8 @@ public class Landverwaltung implements Serializable {
     private List<Spieler> suedamerika=new ArrayList();
     private FilePersistenceManager pm = new FilePersistenceManager();
 
-    public List <Land> getLandListe() {
-        return landListe;
-    }
+    // getter
+    public List <Land> getLandListe() { return landListe;}
     public List <Spieler> getAsien() { return asien;}
     public List <Spieler> getEuropa() { return europa; }
     public List <Spieler> getAfrika() { return afrika; }
@@ -30,8 +29,10 @@ public class Landverwaltung implements Serializable {
     public void resetBewegteTruppen(Land land) {
             land.setBewegteTruppen(-land.getBewegteTruppen());
     }
+
     /**
-     * Methode um alle Länderobjekte zu erstellen und in Landliste in Landverwaltung zu packen
+     * Erzeugt für jedes Land ein entsprechendes Land-Objekt, setzt dessen Nachbarländer
+     * und fügt es der Landverwaltung hinzu.
      */
     public void laenderErstellung(){
         // Nordamerika
@@ -215,10 +216,11 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     *  Abfrage ob eingegebene Einheiten zur Verteidigung gültig sind, oder zu wenig bzw. zu viel eingegeben wurde.
-     * @param einheiten
-     * @param zielLand
-     * @return boolean
+     * Überprüft, ob die angegebene Anzahl an Einheiten zur Verteidigung des Ziel-Landes zulässig ist.
+     *
+     * @param einheiten  Anzahl der zum Verteidigen eingesetzten Einheiten
+     * @param zielLand   das Land, das verteidigt werden soll
+     * @return           true, wenn die Verteidigung mit der angegebenen Einheitenzahl möglich ist
      */
     public boolean verteidigen(int einheiten, Land zielLand) throws ArmeeException{
         if(einheiten<3 && einheiten>0){
@@ -235,9 +237,11 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     *  Erstellt Liste mit random zahlen zwischen 1-6.
-     * @param wiederholungen wie oft gewürfelt wird
-     * @return sortierte Liste mit rand Zahlen.
+     * Führt die angegebene Anzahl an Würfelwürfen (1–6) durch
+     * und gibt die aufsteigend sortierte Liste der Ergebnisse zurück.
+     *
+     * @param wiederholungen Anzahl der Würfelwürfe
+     * @return sortierte Liste der gewürfelten Augenzahlen (1–6)
      */
     public List<Integer> würfel(int wiederholungen){
         List<Integer> liste = new ArrayList<Integer>();
@@ -254,10 +258,15 @@ public class Landverwaltung implements Serializable {
      * setzt bei Erfolg neuen Besitzer und übrig gebliebene Truppen für das Zielland.
      * Nach dieser Methode muss verschoben werden, wenn vom Zielland erobert true ist (danach auf false setzen).
      * Returnt Liste mit zwei zahlen: index 0 sind übrige angriffs truppen, index 1 übrige verteidigungs truppen
-     * @param angriffsLand
-     * @param angriff
-     * @param zielLand
-     * @param verteidigung
+     * @param angriffsLand        das angreifende Land
+     * @param angriff             die Zahl der angreifenden Einheiten (und Würfelwürfe)
+     * @param zielLand            das verteidigende Land
+     * @param verteidigung        die Zahl der verteidigenden Einheiten (und Würfelwürfe)
+     * @param angriffZahlen       Würfelergebnisse des Angreifers
+     * @param verteidigungsZahlen Würfelergebnisse des Verteidigers
+     * @return Liste mit zwei Werten:
+     *         Index 0 = verbleibende Angreifer-Einheiten,
+     *         Index 1 = verbleibende Verteidiger-Einheiten
      */
     public List<Integer> Kampf(Land angriffsLand, int angriff, Land zielLand, int verteidigung, List <Integer> angriffZahlen, List <Integer> verteidigungsZahlen){
         List<Integer> endTruppen= new ArrayList<Integer>();
@@ -293,10 +302,11 @@ public class Landverwaltung implements Serializable {
      * Methode um zu checken, ob verschieben von Einheiten möglich
      * checkt, ob das Land dem gleichen Spieler gehört, mindestens einer im Land bleibt,
      * Besitzer am Zug ist, und die Länder Nachbarländer sind.
-     * @param quellLand
-     * @param zielLand
-     * @param armee
-     * @return boolean
+     * @param quellLand das Land, aus dem die Truppen verschoben werden
+     * @param zielLand  das Land, in das die Truppen verschoben werden
+     * @param armee     die Anzahl der zu verschiebenden Einheiten
+     * @param einrücken true, wenn es sich um ein Rückführungsmanöver handelt
+     * @return true, wenn alle Prüfungen erfolgreich sind
      */
     public boolean verschiebenCheck(Land quellLand, Land zielLand, int armee, boolean einrücken) throws ArmeeException, NotYourLandException,NachbarException{
         if(armee < 0){
@@ -339,10 +349,12 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     *  schiebt eingegebene einheiten Anzahl in anderes Land, schaut erst ob verschieben möglich ist
-     * @param quellLand
-     * @param zielLand
-     * @param einheiten
+     * Prüft und verschiebt die angegebene Anzahl Einheiten von quellLand zu zielLand.
+     *
+     * @param quellLand   Land der Abgabe
+     * @param zielLand    Land der Aufnahme
+     * @param einheiten   zu verschiebende Einheiten
+     * @param einrücken   true für Rückführung
      */
     public void verschieben(Land quellLand, Land zielLand, int einheiten, boolean einrücken) throws ArmeeException,NotYourLandException,NachbarException{
         verschiebenCheck(quellLand, zielLand, einheiten, einrücken);
@@ -355,8 +367,9 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Checkt ob alle Länder ein Besitzer haben, wenn ja true falls nein false
-     * @return boolean
+     * Überprüft, ob jedes Land in der Liste einen Besitzer hat.
+     *
+     * @return true, wenn alle Länder vergeben sind, andernfalls false
      */
     public boolean laenderBesitzerCheck(){
         for (Land land : landListe) {
@@ -368,9 +381,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Methode um die Länder zufällig auf alle zu Verteilen.
-     * Kann erst ausgeführt werden nachdem alle spieler beigetreten sind.
-     * @param sv ( spielerverwaltung mit der Spielerliste)
+     * Verteilt alle Länder zufällig auf die Spieler in sv und wiederholt die Verteilung,
+     * bis jedes Land einen Besitzer hat.
+     *
+     * @param sv die Spielerverwaltung mit der aktuellen Liste aller Spieler
      */
     public void laenderVerteilung(Spielerverwaltung sv){
         Random rand = new Random();
@@ -394,8 +408,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt true zurück wenn asien den gleichen besitzer hat sonst false
-     * @return boolean
+     * Prüft, ob alle Länder in Asien dem angegebenen Spieler gehören.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn jedes Land in Asien im Besitz des Spielers ist, sonst false
      */
     public boolean asienBesitzer(Spieler spieler){
         for (Spieler land : asien) {
@@ -407,8 +423,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt true zurück wenn europa den gleichen besitzer hat sonst false
-     * @return boolean
+     * Prüft, ob alle Länder in Europa dem angegebenen Spieler gehören.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn jedes Land in Europa im Besitz des Spielers ist, sonst false
      */
     public boolean europaBesitzer(Spieler spieler){
         for (Spieler land : europa) {
@@ -420,8 +438,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt true zurück wenn afrika den gleichen besitzer hat sonst false
-     * @return boolean
+     * Prüft, ob alle Länder in Afrika dem angegebenen Spieler gehören.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn jedes Land in Afrika im Besitz des Spielers ist, sonst false
      */
     public boolean afrikaBesitzer(Spieler spieler){
         for (Spieler land : afrika) {
@@ -433,8 +453,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt true zurück wenn australien den gleichen besitzer hat sonst false
-     * @return boolean
+     * Prüft, ob alle Länder in Ausstralien dem angegebenen Spieler gehören.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn jedes Land in Ausstralien im Besitz des Spielers ist, sonst false
      */
     public boolean australienBesitzer(Spieler spieler){
         for (Spieler land : australien) {
@@ -446,8 +468,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt true zurück wenn nordamerika den gleichen besitzer hat sonst false
-     * @return boolean
+     * Prüft, ob alle Länder in Nordamerika dem angegebenen Spieler gehören.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn jedes Land in Nordamerika im Besitz des Spielers ist, sonst false
      */
     public boolean nordamerikaBesitzer(Spieler spieler){
         for (Spieler land : nordamerika) {
@@ -459,8 +483,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt true zurück wenn suedamerika den gleichen besitzer hat sonst false
-     * @return boolean
+     * Prüft, ob alle Länder in Suedamerika dem angegebenen Spieler gehören.
+     *
+     * @param spieler der zu prüfende Spieler
+     * @return true, wenn jedes Land in Suedamerika im Besitz des Spielers ist, sonst false
      */
     public boolean suedamerikaBesitzer(Spieler spieler){
         for (Spieler land : suedamerika) {
@@ -472,9 +498,10 @@ public class Landverwaltung implements Serializable {
     }
 
     /**
-     * Gibt eine Liste mit Ländern die ein Spieler besitzt zurück.
-     * @param spieler
-     * @return
+     * Ermittelt alle Länder, die im Besitz des angegebenen Spielers sind.
+     *
+     * @param spieler dessen Länder abgefragt werden
+     * @return Liste aller Länder, die der Spieler besitzt
      */
     public List<Land> landAusgabeVonSpieler(Spieler spieler) {
         List<Land> spielerLaender = new ArrayList<Land>();
@@ -486,6 +513,10 @@ public class Landverwaltung implements Serializable {
         return spielerLaender;
     }
 
+    /**
+     * Leert und befüllt die Besitzerlisten für alle Kontinente neu,
+     * indem jeweils die aktuellen Eigentümer aus landListe übernommen werden.
+     */
     public void kontinentAktualisieren(){
         asien.clear();
         nordamerika.clear();
@@ -535,9 +566,14 @@ public class Landverwaltung implements Serializable {
         australien.add(landListe.get(39).getBesitzer());
         australien.add(landListe.get(40).getBesitzer());
         australien.add(landListe.get(41).getBesitzer());
-
     }
-    
+
+    /**
+     * Sichert alle Länder aus landListe in der Datei "persistence/Speicher/Landspeicher.txt".
+     *
+     * @return true, wenn alle Einträge erfolgreich geschrieben wurden
+     * @throws IOException bei einem Schreibfehler in der Datei
+     */
     public boolean speichereLand() throws IOException{
         pm.openForWriting("persistence/Speicher/Landspeicher.txt");
         boolean gespeichert = true;
@@ -550,6 +586,15 @@ public class Landverwaltung implements Serializable {
         return gespeichert;
     }
 
+    /**
+     * Lädt alle Länder aus der Persistenzdatei „persistence/Speicher/Landspeicher.txt“
+     * und befüllt die interne landListe, wobei jede geladene Land-ID anhand der übergebenen
+     * spielerList seinem Besitzer zugeordnet wird.
+     *
+     * @param spielerList Liste der Spieler zur Zuordnung der Länderbesitzer
+     * @throws IOException                  bei Lesefehlern der Datei
+     * @throws KeinSpeicherstandException   wenn kein gültiger Speicherstand vorliegt
+     */
     public void ladeLand(List <Spieler> spielerList) throws IOException, KeinSpeicherstandException {
         this.pm.openForReading("persistence/Speicher/Landspeicher.txt");
         try {
@@ -563,6 +608,12 @@ public class Landverwaltung implements Serializable {
         pm.close();
     }
 
+    /**
+     * Speichert die Besitzer aller in der Datei "persistence/Speicher/KontinentBesitzer.txt".
+     *
+     * @return true, wenn alle Einträge erfolgreich geschrieben wurden
+     * @throws IOException  bei einem Fehler beim Schreiben der Datei
+     */
     public boolean speichereKontinentBesitzer() throws IOException{
         pm.openForWriting("persistence/Speicher/KontinentBesitzer.txt");
         boolean gespeichert=true;
@@ -599,6 +650,15 @@ public class Landverwaltung implements Serializable {
         pm.close();
         return gespeichert;
     }
+
+    /**
+     * Lädt die Besitzer für alle Kontinente aus der Datei
+     * "persistence/Speicher/KontinentBesitzer.txt" und befüllt die Listen der Kontinente entsprechend.
+     *
+     * @param spielerList Liste der Spieler zur Zuordnung der geladenen Besitzer
+     * @throws IOException               bei Lesefehlern der Persistenzdatei
+     * @throws KeinSpeicherstandException wenn kein gültiger Speicherstand vorliegt
+     */
     public void ladeKontinentBesitzer(List<Spieler> spielerList) throws IOException, KeinSpeicherstandException {
         pm.openForReading("persistence/Speicher/KontinentBesitzer.txt");
         try {
@@ -626,9 +686,10 @@ public class Landverwaltung implements Serializable {
         }
         pm.close();
     }
-    
 
-    // ab hier Getter für MissionKontinent
+
+    // ab hier Getter für MissionKontinent------------------------------------------------------------------
+
     public List<Land> getNordamerikaLaender() {
         List<Land> result = new ArrayList<>();
         for (Land land : landListe) {
@@ -639,6 +700,7 @@ public class Landverwaltung implements Serializable {
         }
         return result;
     }
+
     public List<Land> getSuedamerikaLaender() {
         List<Land> result = new ArrayList<>();
         for (Land land : landListe) {
@@ -649,6 +711,7 @@ public class Landverwaltung implements Serializable {
         }
         return result;
     }
+
     public List<Land> getEuropaLaender() {
         List<Land> result = new ArrayList<>();
         for (Land land : landListe) {
@@ -658,7 +721,8 @@ public class Landverwaltung implements Serializable {
             }
         }
         return result;
-    }    
+    }
+
     public List<Land> getAfrikaLaender() {
         List<Land> result = new ArrayList<>();
         for (Land land : landListe) {
@@ -668,7 +732,8 @@ public class Landverwaltung implements Serializable {
             }
         }
         return result;
-    }     
+    }
+
     public List<Land> getAsienLaender() {
         List<Land> result = new ArrayList<>();
         for (Land land : landListe) {
@@ -678,7 +743,8 @@ public class Landverwaltung implements Serializable {
             }
         }
         return result;
-    } 
+    }
+
     public List<Land> getAustralienLaender() {
         List<Land> result = new ArrayList<>();
         for (Land land : landListe) {

@@ -27,7 +27,7 @@ public class Spieler implements Serializable {
     public Spieler(String name) {
         this.name = name;
     }
-
+    //Konstruktoren
     public Spieler(String name, String charBild) {
         this.id = idZaehler++;
         this.name = name;
@@ -50,7 +50,7 @@ public class Spieler implements Serializable {
         this.farbe = farben.get(this.id);
         this.charBild = charBild;
     }
-    //getter
+    //Getter
     public int getId() {
         return id;
     }
@@ -80,7 +80,7 @@ public class Spieler implements Serializable {
         return lebendig;
     }
     public List<Einheitskarte> getEinheitskarten() { return einheitsKartenListe; }
-    //setter
+    //Setter
     public void setIstAmZug(boolean istAmZug) {
         this.istAmZug = istAmZug;
     }
@@ -101,7 +101,7 @@ public class Spieler implements Serializable {
     public void setEinheitsKartenListe(List<Einheitskarte>  einheitsKartenListe) {
         this.einheitsKartenListe = einheitsKartenListe;
     }
-
+    //toString-Methode
     public String toString() {
         return (id +1 )+ ".Spieler: " + name + " hat "+ anzahlLaender+" Länder und " + ((istAmZug) ? "ist am Zug.": "ist nicht am Zug.") +" Ist"+(this.lebendig?" noch im Spiel!":" ist ausgeschieden!");
     }
