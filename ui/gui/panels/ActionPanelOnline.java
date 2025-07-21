@@ -121,11 +121,11 @@ public class ActionPanelOnline extends JPanel  implements Action{
                             }
                         }else if(kartenEntscheidung == 1){
                             buttonClicked++;
-                            JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " Einheiten verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else if (buttonClicked == 0) {
                         buttonClicked++;
-                        JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " Einheiten verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
                     } else if (buttonClicked == 1) {
                         if (weltPanel.getCountryClicked()) {
                             String id = weltPanel.getLastClickedCountry();
