@@ -112,7 +112,7 @@ public class ActionPanel extends JPanel  implements Action{
                             try {
                                 einheiten = welt.armeeVerteilung() + welt.kartenEinlösen(karte1, karte2, karte3);
                                 buttonClicked++;
-                                JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " Einheiten verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
                             } catch (NotYourCardException | SymbolException | DoppelteKarteException ex) {
                                 JOptionPane.showMessageDialog(frame, ex.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
                             }

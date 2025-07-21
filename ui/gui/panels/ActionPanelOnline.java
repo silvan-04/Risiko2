@@ -115,7 +115,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
                             try {
                                 einheiten = welt.armeeVerteilung() + welt.kartenEinlösen(karte1, karte2, karte3);
                                 buttonClicked++;
-                                JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(frame, "Du kannst " + (welt.aktiverSpieler().getEinheitenRunde()+einheiten) + " Einheiten verteilen! \nKlicke das Land an, welches verstärkt werden soll!", " Armee verteilen!", JOptionPane.INFORMATION_MESSAGE);
                             } catch (NotYourCardException | SymbolException | DoppelteKarteException ex) {
                                 JOptionPane.showMessageDialog(frame, ex.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
                             }
@@ -296,7 +296,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
                 } else {
                     if(buttonClicked == 0){
                         String [] options = {"Verschieben!","Nächster Spieler!"};
-                        int auswahl = JOptionPane.showOptionDialog(frame, "Was möchstest du tun ?", "Verschieben!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        int auswahl = JOptionPane.showOptionDialog(frame, "Was möchtest du tun ?", "Verschieben!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                         if (auswahl == 1) {
                             try {
                                 welt.naechsterZug();

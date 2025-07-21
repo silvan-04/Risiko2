@@ -12,8 +12,6 @@ import javax.swing.JOptionPane;
 import Risiko.entities.*;
 import Risiko.events.*;
 import Risiko.commands.*;
-import Risiko.domain.Welt;
-import Risiko.ui.gui.Fenster.MenuFenster;
 import Risiko.ui.gui.RisikoClientGUI;
 import Risiko.ui.gui.panels.WarteFenster;
 
@@ -145,7 +143,7 @@ public class GameClient implements Serializable {
                 case GAME_STARTED:
                     frame.dispose();
                     this.risikoFrame = new RisikoClientGUI(gce.getWelt(),this);
-                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
+                    aktualisiereSpieler(gce.getWelt().getSpielerListe());
                     ((RisikoClientGUI)risikoFrame).getActionButton().addActionListener(e -> {
                         try {
                             socketOut.writeObject(new GameCommand(GameCommandType.GAME_ACTION));
@@ -161,10 +159,11 @@ public class GameClient implements Serializable {
                     // since game event also carries information on next turn
 //                    break;
                 case NEXT_TURN:
-                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
+                    aktualisiereSpieler(gce.getWelt().getSpielerListe());
                     int phase = gce.getPhase();
                     System.out.println(phase);
-                    Spieler currentSpieler = gce.getSpieler();
+                    Spieler currentSpieler = gce.getWelt().aktiverSpieler();
+                    System.out.println(currentSpieler.getName() + " ist gerade dran.");
                     System.out.println(player.getIstAmZug());
                     if (currentSpieler.equals(player)) {
                         ((RisikoClientGUI)risikoFrame).setButton(true);
@@ -179,7 +178,7 @@ public class GameClient implements Serializable {
                     }
                     break;
                 case GAME_OVER:
-                    aktuallisiereSpieler(gce.getWelt().getSpielerListe());
+                    aktualisiereSpieler(gce.getWelt().getSpielerListe());
                     btnGameAction.setEnabled(false);
                     btnNextTurn.setEnabled(false);
                     JOptionPane.showMessageDialog(frame,
@@ -191,23 +190,23 @@ public class GameClient implements Serializable {
                 default:
             }
         } else if (event instanceof GameActionEvent gae) {
-            aktuallisiereSpieler(gae.getWelt().getSpielerListe());
+            aktualisiereSpieler(gae.getWelt().getSpielerListe());
             if (!gae.getSpieler().equals(this.player)) {
                 // Event originates from other player and is relevant for me:
                 switch (gae.getType()) {
                     case ATTACK:
                         if(gae.getVerteidiger().equals(this.player)){
-                            JOptionPane.showMessageDialog(frame,
-                                    "You are attacked by player " + gae.getSpieler().getName() + ".",
-                                    "Attack!",
-                                    JOptionPane.WARNING_MESSAGE);
+//                            JOptionPane.showMessageDialog(frame,
+//                                    "You are attacked by player " + gae.getSpieler().getName() + ".",
+//                                    "Attack!",
+//                                    JOptionPane.WARNING_MESSAGE);
                         }
                         break;
                     case NEW_OWNER:
-                        JOptionPane.showMessageDialog(frame,
-                                "Some territory has been conquered by player " + gae.getSpieler().getName() + ".",
-                                "UI Update!",
-                                JOptionPane.INFORMATION_MESSAGE);
+//                        JOptionPane.showMessageDialog(frame,
+//                                "Some territory has been conquered by player " + gae.getSpieler().getName() + ".",
+//                                "UI Update!",
+//                                JOptionPane.INFORMATION_MESSAGE);
                         break;
                     default:
                 }
@@ -226,7 +225,7 @@ public class GameClient implements Serializable {
         }
     }
 
-    public void aktuallisiereSpieler(List<Spieler> list){
+    public void aktualisiereSpieler(List<Spieler> list){
         for(Spieler spieler : list){
             if(this.player.getName().equals(spieler.getName())){
                 this.player=spieler;

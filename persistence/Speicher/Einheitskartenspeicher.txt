@@ -1,4 +1,4 @@
-42
+41
 ak
 Kanone
 nt
@@ -8,8 +8,6 @@ Kanone
 on
 Kanone
 qb
-Kanone
-gr
 Kanone
 unw
 Kanone
