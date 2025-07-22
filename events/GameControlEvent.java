@@ -17,6 +17,7 @@ public class GameControlEvent extends GameEvent {
     private final int phase;
     private final int playerCount;
     private final Welt welt;
+    private final int verbundeneSpieler;
 
     public GameControlEvent(Welt welt, GameControlEventType type) {
         // GAME_STARTED: Spieler beginnt
@@ -28,7 +29,23 @@ public class GameControlEvent extends GameEvent {
         this.phase = welt.getPhase();
         this.playerCount = welt.getSpielerListe().size();
         this.welt = welt;
+        this.verbundeneSpieler = 0;
     }
+
+    //Spiel laden
+    public GameControlEvent(Welt welt, GameControlEventType type, int verbundeneSpieler) {
+        // GAME_STARTED: Spieler beginnt
+        // GAME_OVER: Spieler hat gewonnen
+        // NEXT_TURN: Nächste Phase / nächster Spieler
+        super(welt.aktiverSpieler());
+
+        this.type = type;
+        this.phase = welt.getPhase();
+        this.playerCount = welt.getSpielerListe().size();
+        this.verbundeneSpieler = verbundeneSpieler;
+        this.welt = welt;
+    }
+
 
     public GameControlEventType getType() {
         return type;
@@ -43,4 +60,5 @@ public class GameControlEvent extends GameEvent {
     public Welt getWelt() {
         return this.welt;
     }
+    public int getVerbundeneSpieler() {return this.verbundeneSpieler;}
 }

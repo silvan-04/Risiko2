@@ -24,10 +24,10 @@ public class Spieler implements Serializable {
     private List<Einheitskarte> einheitsKartenListe = new ArrayList<Einheitskarte>();
     private List<String> farben = new ArrayList<>(Arrays.asList("#1B3B6F","#8E2835","#728E4B","#5C215C","#BF5C00","#6F4E37"));
 
+    //Konstruktoren
     public Spieler(String name) {
         this.name = name;
     }
-    //Konstruktoren
     public Spieler(String name, String charBild) {
         this.id = idZaehler++;
         this.name = name;
@@ -101,7 +101,14 @@ public class Spieler implements Serializable {
     public void setEinheitsKartenListe(List<Einheitskarte>  einheitsKartenListe) {
         this.einheitsKartenListe = einheitsKartenListe;
     }
-    //toString-Methode
+
+    /**
+     * Gibt eine Beschreibung des Spielers zurück,
+     * mit seiner ID, seines Namens, der Anzahl seiner Länder,
+     * ob er aktuell am Zug ist, und ob er noch im Spiel ist oder ausgeschieden.
+     *
+     * @return beschreibender String mit Spielerstatus
+     */
     public String toString() {
         return (id +1 )+ ".Spieler: " + name + " hat "+ anzahlLaender+" Länder und " + ((istAmZug) ? "ist am Zug.": "ist nicht am Zug.") +" Ist"+(this.lebendig?" noch im Spiel!":" ist ausgeschieden!");
     }

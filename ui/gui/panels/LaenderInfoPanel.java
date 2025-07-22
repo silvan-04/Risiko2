@@ -17,14 +17,22 @@ public class LaenderInfoPanel extends JPanel {
     }
 
     /**
-     * Bei änderung der ratio wird diese neu gesettet und das Panel repaintet
-     * @param ratio
+     * Setzt den Skalierungsfaktor neu und veranlasst ein Neuzeichnen des Panels.
+     *
+     * @param ratio neuer Skalierungsfaktor
      */
     public void setRatio(double ratio) {
         this.ratio = ratio;
         repaint();
     }
 
+    /**
+     * Aktualisiert die Welt und löst
+     * eine Neuanordnung sowie ein Neuzeichnen des Panels aus,
+     * damit Änderungen sofort sichtbar werden.
+     *
+     * @param welt die neue Welt für dieses Panel
+     */
     public void updateWelt(Welt welt){
         this.welt=welt;
         revalidate();
@@ -35,8 +43,12 @@ public class LaenderInfoPanel extends JPanel {
 
 
     /**
-     * Zeichnet Kreise mit Farbe der Besitzer und anzahl der Einheiten des jeweiligen Landes.
-     * @param g the <code>Graphics</code> object to protect
+     * Zeichnet die Truppenstärke jedes Landes als farbige Kreissymbole:
+     * - Entfernt alle bisherigen Anzeige-Labels und validiert das Panel.
+     * - Ermittelt für jedes Land anhand des Besitzers die Kreisfarbe.
+     * - Berechnet Größe und Position des Kreises aus dem Skalierungsfaktor
+     * - Zeichnet den gefüllten Kreis, umrandet ihn weiß und setzt zentriert ein JLabel mit der aktuellen Truppenanzahl.
+     * @param g das Graphics-Objekt zum Zeichnen
      */
     @Override
     protected void paintComponent(Graphics g) {

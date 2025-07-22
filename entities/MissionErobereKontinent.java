@@ -40,6 +40,18 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
         return lv;
     }
 
+    /**
+     * Erzeugt eine Mission, in der der Spieler zwei vorgegebene Kontinente
+     * (und optional einen dritten beliebigen) vollständig erobern muss.
+     *
+     * @param kontinent1Name   Name des ersten zu erobernden Kontinents
+     * @param kontinent2Name   Name des zweiten zu erobernden Kontinents
+     * @param kontinent1Liste  aktuelle Besitzverhältnisse im ersten Kontinent
+     * @param kontinent2Liste  aktuelle Besitzverhältnisse im zweiten Kontinent
+     * @param zusatzKontinent  true, wenn zusätzlich ein beliebiger dritter Kontinent erobert werden soll
+     * @param spieler          der Spieler, der diese Mission erhält
+     * @param lv               die Landverwaltung zum Abrufen weiterer Kontinentsdaten
+     */
     public MissionErobereKontinent(String kontinent1Name, String kontinent2Name, List<Spieler> kontinent1Liste, List<Spieler> kontinent2Liste, boolean zusatzKontinent, Spieler spieler, Landverwaltung lv) {
         this.kontinent1Name = kontinent1Name;
         this.kontinent2Name = kontinent2Name;
@@ -51,8 +63,11 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
     }
 
     /**
-     * Zum überprüfen, ob die vorgegebenen Kontinente eingenommen wurden oder auch ob der Kontinent nach Wahl schon eingenommen wurde.
-     * @return
+     * Prüft, ob der Spieler beide vorgegebenen Kontinente vollständig besitzt.
+     * Ist zusatzKontinent true, gilt die Mission erst als erfüllt, wenn zusätzlich
+     * ein beliebiger dritter Kontinent eingenommen wurde (insgesamt drei Kontinente).
+     *
+     * @return true, wenn die Missionsbedingungen erfüllt sind, sonst false
      */
     public boolean istErfuellt() {
                 for (Spieler land : kontinent1) {
@@ -95,6 +110,13 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
                 }
     }
 
+    /**
+     * Liefert die Missionsbeschreibung:
+     * -> Ohne Zusatzkontinent: „Erobere Kontinent1 und Kontinent2!“
+     * -> Mit Zusatzkontinent: „Erobere Kontinent1, Kontinent2 und einen weiteren beliebigen Kontinent!“
+     *
+     * @return Beschreibungstext der Mission
+     */
     public String beschreibung() {
         if (!zusatzKontinent) {
             return ("Erobere " + kontinent1Name + " und " + kontinent2Name + "!");
@@ -103,6 +125,11 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
         }
     }
 
+    /**
+     * Gibt die Siegesnachricht zurück, wenn der Spieler die Mission erfolgreich abgeschlossen hat.
+     *
+     * @return Text mit Spielername und Missionsbeschreibung
+     */
     public String siegerNachricht(){
         return this.spieler.getName() + " hat gewonnen! \n Er hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
     }

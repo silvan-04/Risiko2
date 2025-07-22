@@ -64,7 +64,6 @@ public class GameActionEvent extends GameEvent {
     }
     public Spieler getVerteidiger() {
         return verteidiger;
-
     }
     public Welt getWelt(){
         return welt;

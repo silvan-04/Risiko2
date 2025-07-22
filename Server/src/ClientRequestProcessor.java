@@ -13,8 +13,11 @@ import Risiko.events.GameEvent;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ClientRequestProcessor {
@@ -28,8 +31,14 @@ public class ClientRequestProcessor {
     private String angriffsLand;
     private String zielLand;
     private int einheiten;
+    private static int idZähler=0;
+    private int id;
+    private final BlockingQueue<Object> replyQueue = new LinkedBlockingQueue<>();
+    private int einheitenAngriff = 0;
+
 
     public ClientRequestProcessor(Socket socket,Welt welt,GameServer gameServer) {
+        id=idZähler++;
         this.socket = socket;
         this.welt = welt;
         this.gameServer = gameServer;
@@ -55,19 +64,58 @@ public class ClientRequestProcessor {
         return in;
     }
 
-    public void handleClient() throws IOException, ClassNotFoundException, DoppelterNameException {
+    public void handleClient() throws IOException, ClassNotFoundException, DoppelterNameException, InterruptedException {
         while (true) {
             Object obj = in.readObject();
             if (obj instanceof GameCommand cmd) {
                 switch (cmd.getType()) {
-                    case GameCommandType.GAME_START -> startGame();
-                    case GameCommandType.NEXT_TURN -> nextTurn();
-                    case GameCommandType.GAME_ACTION -> someGameAction();
-                    case GameCommandType.VERTEIDIGUNG -> verteidung(cmd);
+                    case GameCommandType.GAME_START ->
+                        new Thread(() -> {
+                            try{
+                                startGame();
+                            }catch (IOException ioe){
+                                ioe.printStackTrace();
+                            }
+                        }, "StartGame-Thread").start();
+                    case GameCommandType.NEXT_TURN ->
+                        new Thread(()->{
+                            try{
+                                nextTurn();
+                            }catch(IOException ioe){
+                                ioe.printStackTrace();
+                            }
+                        }, "nextTurn-Thread").start();
+                    case GameCommandType.GAME_ACTION ->
+                        new Thread(()->{
+                            try{
+                                someGameAction();
+                            }catch (IOException | InterruptedException ioException){
+                                ioException.printStackTrace();
+                            }
+                        },"GameAction-Thread").start();
+                    case GameCommandType.VERTEIDIGUNG ->
+                        new Thread(()->{
+                            try{
+                                System.out.println("im verteidigung thread");
+                                verteidung(cmd);
+                            }catch(IOException ioe){
+                                ioe.printStackTrace();
+                            }
+                        },"Verteidigung-Thread").start();
+                    case GameCommandType.LADESPIELER ->
+                        new Thread (()->{
+                            try {
+                                ladeSpieler();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        },"LadeSpieler-Thread").start();
+//                    case GameCommandType.VERTERIDIGUNGANTWORT -> zweitePhaseWeiter(cmd.getPayload());
                 }
             } else if (obj instanceof Spieler player) {
                 addPlayer(player.getName());
-
+            } else{
+                replyQueue.put(obj);
             }
         }
     }
@@ -111,6 +159,15 @@ public class ClientRequestProcessor {
         gameServer.notifyListeners(new GameControlEvent(welt, GameControlEvent.GameControlEventType.GAME_STARTED));
     }
 
+    public void ladeSpieler() throws IOException {
+        Spieler spieler = welt.getSpielerListe().get(this.id);
+        out.writeObject(spieler);
+        gameServer.notifyListeners(new GameControlEvent(welt,GameControlEvent.GameControlEventType.PLAYER_JOINED,id+1));
+        if(welt.getSpielerListe().size() == this.id+1) {
+            gameServer.notifyListeners(new GameControlEvent(welt, GameControlEvent.GameControlEventType.GAME_STARTED));
+        }
+    }
+
 
 
     /*
@@ -132,7 +189,7 @@ public class ClientRequestProcessor {
      * (non-Javadoc)
      * @see prog2.vl.gameloop.common.ServerRemote#someGameAction()
      */
-    public void someGameAction() throws IOException, ClassNotFoundException {
+    public void someGameAction() throws IOException,InterruptedException {
 
         if(welt.getPhase()==0){
             erstePhase();
@@ -141,36 +198,35 @@ public class ClientRequestProcessor {
         }else if (welt.getPhase()==2) {
             drittePhase();
         }
-//        // Simulate one (of three possible) actions
-//        int actionID = new Random().nextInt(3);
-//        GameActionEvent.GameActionEventType type = GameActionEvent.GameActionEventType.values()[actionID];
-//        // Hier: Aktion ausführen...
-//        gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(),welt.getSpielerListe().get(((welt.aktiverSpieler().getId())+1)% welt.getSpielerListe().size()), GameActionEvent.GameActionEventType.ATTACK,welt));
-
-        // Game over?
     }
 
     public void verteidung(GameCommand gC) throws IOException {
-        gameServer.notifyListeners(new GameActionEvent(gC.getSpieler(),welt,gC.getPayload()));
+        System.out.println("in verteidigung methode");
+//        for(Spieler spieler : welt.getSpielerListe()){
+//            if(gC.getSpieler().getName().equals(spieler.getName())){
+//                spieler1 = spieler;
+//                break;
+//            }
+//        }
+        System.out.println(welt.aktiverSpieler().getName() + "name ");
+        gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(),welt,gC.getPayload()));
     }
 
     private void updateClientWelt() throws IOException {
         gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(),GameActionEvent.GameActionEventType.UPDATE,welt));
     }
 
-    public void erstePhase() throws IOException, ClassNotFoundException {
-        System.out.println("will phase senden "+ welt.getPhase());
-        out.writeObject(Integer.valueOf(0));
+    public void erstePhase() throws IOException, InterruptedException {
+        out.writeObject(Integer.valueOf(0));    // übergibt die 1. Phase
         out.flush();
-        System.out.println("phase senden");
-        if(buttonClicked == 0 && welt.aktiverSpieler().getEinheitskarten().size()>2) {
-            out.writeObject(Integer.valueOf(0));
+        if(buttonClicked == 0 && welt.aktiverSpieler().getEinheitskarten().size()>2) {  // Spieler wird nur nach Karten Einlösen gefragt, wenn er mind. 3 Karten hat
+            out.writeObject(Integer.valueOf(0));    // übergibt ersten Fall von buttonClicked == 0 && welt.aktiverSpieler().getEinheitskarten().size()>2
             out.flush();
             int kartenEntscheidung = 0;
             if(!welt.handkartenlimit(welt.aktiverSpieler())){
                 out.writeObject(false);
                 out.flush();
-                kartenEntscheidung = (int)in.readObject();
+                kartenEntscheidung = (int)replyQueue.take();
             }else{
                 out.writeObject(true);
                 out.flush();
@@ -178,10 +234,10 @@ public class ClientRequestProcessor {
             Einheitskarte karte1;
             Einheitskarte karte2;
             Einheitskarte karte3;
-            if (kartenEntscheidung == 0 ){
-                karte1 = (Einheitskarte)in.readObject();
-                karte2 = (Einheitskarte)in.readObject();
-                karte3 = (Einheitskarte)in.readObject();
+            if (kartenEntscheidung == 0 ){  // wenn der Spieler Karten einlösen möchte
+                karte1 = (Einheitskarte)replyQueue.take();
+                karte2 = (Einheitskarte)replyQueue.take();
+                karte3 = (Einheitskarte)replyQueue.take();
 
                 try {
                     einheiten = welt.armeeVerteilung() + welt.kartenEinlösen(karte1, karte2, karte3);
@@ -200,15 +256,16 @@ public class ClientRequestProcessor {
                 buttonClicked++;
             }
         } else if (buttonClicked == 0) {
-            out.writeObject(Integer.valueOf(1));
+            out.writeObject(Integer.valueOf(1));    // übergibt zweiten Fall von buttonClicked == 0
             out.flush();
             buttonClicked++;
         } else if (buttonClicked == 1) {
-            out.writeObject(Integer.valueOf(2));
+            out.writeObject(Integer.valueOf(2));    // übergibt dritten Fall von buttonClicked == 1
             out.flush();
-            boolean countryClicked = (boolean)in.readObject();
+            boolean countryClicked = (boolean)replyQueue.take();
+
             if (countryClicked) {
-                String id =  (String) in.readObject();
+                String id =  (String) replyQueue.take();    // empfängt geklicktes Land
                 boolean stop = false;
                 try {
                     welt.isIdGueltig(id);
@@ -222,10 +279,10 @@ public class ClientRequestProcessor {
                     out.flush();
                 }
                 if (!stop) {
-                    int einheiten = (int)in.readObject();
-                    int verschobenEinheiten =(int) in.readObject();
+                    int einheiten = (int)replyQueue.take();     // empfängt maximale Zahl an Einheiten
+                    int verschobenEinheiten =(int) replyQueue.take();   // empfängt wie viele Einheiten der Spieler einsetzen möchte
                     try {
-                        welt.aktiverSpieler().setEinheitenRunde(welt.truppenPlatzieren(welt.aktiverSpieler().getEinheitenRunde()+einheiten, verschobenEinheiten, id));
+                        welt.aktiverSpieler().setEinheitenRunde(welt.truppenPlatzieren(welt.aktiverSpieler().getEinheitenRunde() + einheiten, verschobenEinheiten, id));
                         buttonClicked = 0;
                         out.writeObject(true);
                         out.flush();
@@ -251,13 +308,13 @@ public class ClientRequestProcessor {
         }
     }
 
-    public void zweitePhase() throws IOException, ClassNotFoundException {
-        out.writeObject(Integer.valueOf(1));
+    public void zweitePhase() throws IOException, InterruptedException {
+        out.writeObject(Integer.valueOf(1));    // übergibt die 2. Phase
         out.flush();
         if (buttonClicked == 0) {
-            out.writeObject(Integer.valueOf(0));
+            out.writeObject(Integer.valueOf(0));    // übergibt den Fall von buttonClicked == 0
             out.flush();
-            int auswahl = (int) in.readObject();
+            int auswahl = (int) replyQueue.take();      // empfängt, ob Spieler angreifen möchte oder nicht
             if (auswahl == 1) {
                 welt.naechstePhase();
                 updateClientWelt();
@@ -265,11 +322,11 @@ public class ClientRequestProcessor {
                 buttonClicked++;
             }
         } else if (buttonClicked == 1) {
-            out.writeObject(Integer.valueOf(1));
+            out.writeObject(Integer.valueOf(1));    // übergibt den Fall von buttonClicked == 1
             out.flush();
-            boolean countryClicked = (boolean) in.readObject();
+            boolean countryClicked = (boolean) replyQueue.take();
             if (countryClicked) {
-                angriffsLand = (String) in.readObject();
+                angriffsLand = (String) replyQueue.take();  // empfängt das Land mit dem der Spieler angreifen möchte
                 boolean stop = false;
                 try {
                     welt.isIdGueltig(angriffsLand);
@@ -285,11 +342,11 @@ public class ClientRequestProcessor {
                 }
             }
         } else if (buttonClicked == 2) {
-            out.writeObject(Integer.valueOf(2));
+            out.writeObject(Integer.valueOf(2));    // übergibt den Fall von buttonClicked == 2
             out.flush();
-            boolean countryClicked = (boolean) in.readObject();
+            boolean countryClicked = (boolean) replyQueue.take();
             if (countryClicked) {
-                zielLand = (String) in.readObject();
+                zielLand = (String) replyQueue.take();  // empfängt das Land, das der Spieler angreifen möchte
                 boolean stop2 = false;
                 try {
                     welt.isIdHostile(zielLand, angriffsLand);
@@ -305,17 +362,19 @@ public class ClientRequestProcessor {
                 }
                 if (!stop2) {
                     boolean stop3 = false;
-                    int einheitenAngriff = 0;
                     if (welt.idToLand(angriffsLand).getArmee() > 3) {
                         out.writeObject("Max:3 Einheiten.");
+                        out.flush();
                     } else if (welt.idToLand(angriffsLand).getArmee() > 2) {
                         out.writeObject("Max:2 Einheiten.");
+                        out.flush();
                     } else if (welt.idToLand(angriffsLand).getArmee() > 1) {
                         out.writeObject("Max:1 Einheiten.");
+                        out.flush();
                     }
-                    stop3 = (boolean) in.readObject();
+                    stop3 = (boolean) replyQueue.take();
                     if (!stop3) {
-                        einheitenAngriff = (int) in.readObject();
+                        einheitenAngriff = (int) replyQueue.take();     // empfängt mit wie vielen Truppen der Spieler angreifen möchte
                         try {
                             welt.angreifbar(einheitenAngriff, welt.idToLand(angriffsLand), welt.idToLand(zielLand));
                             out.writeObject(stop3);
@@ -330,94 +389,193 @@ public class ClientRequestProcessor {
                     }
                     if (!stop3) {
                         boolean stop4 = false;
-
+                        int verteidigen = 0;
                         String möglicheEinheiten = null;
                         if (welt.idToLand(zielLand).getArmee() > 1) {
                             möglicheEinheiten = "Max:2 Einheiten.";
                         } else {
                             möglicheEinheiten = "Max:1 Einheit.";
                         }
-                        gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(), welt.idToLand(zielLand).getBesitzer(), möglicheEinheiten, zielLand, welt));
+                        gameServer.notifyListeners(new GameActionEvent(welt.aktiverSpieler(), welt.idToLand(zielLand).getBesitzer(), möglicheEinheiten, zielLand, welt));   // Abfrage der Anzahl an verteidigenden Truppen
 
                         try {
+                             verteidigen = (Integer) replyQueue.take();    // empfängt die Anzahl an verteidigenden Truppen
+                            System.out.println("nach auslesen von zahl:" + verteidigen);
 
-                            int verteidigen = (Integer) in.readObject();
                             welt.verteidigen(verteidigen, welt.idToLand(zielLand));
                             out.writeObject(false);
                             out.flush();
-                        } catch (NumberFormatException except) {
+                        } catch (NumberFormatException | ArmeeException except) {
                             stop4 = true;
                             out.writeObject(stop4);
                             out.flush();
                             out.writeObject(except);
                             out.flush();
-                        } catch (ArmeeException excepti) {
-                            stop4 = true;
-                            out.writeObject(stop4);
-                            out.flush();
-                            out.writeObject(excepti);
-                            out.flush();
                         }
 
-
-//                            if (!stop4) {
-//                                java.util.List<Integer> angriffZahlen = welt.würfel(einheitenAngriff);
-//                                java.util.List<Integer> verteidigungsZahlen = welt.würfel(verteidigen);
-//                                JOptionPane.showMessageDialog(frame, welt.aktiverSpieler().getName() + " würfelt:" + angriffZahlen + "\n" + welt.idToLand(zielLand).getBesitzer().getName() + " würfelt:" + verteidigungsZahlen, "Würfel", JOptionPane.WARNING_MESSAGE);
-//                                List<Integer> endTruppen = welt.Kampf(welt.idToLand(angriffsLand), einheitenAngriff, welt.idToLand(zielLand), verteidigen, angriffZahlen, verteidigungsZahlen);
-//
-//                                //Verschieben nach eroberung
-//                                if (welt.idToLand(zielLand).getErobert()) {
-//                                    welt.idToLand(zielLand).setErobert(false);
-//
-//                                    boolean fehler = true;
-//                                    do {
-//                                        try {
-//                                            if ((welt.idToLand(angriffsLand).getArmee() - 1) != 0) {
-//                                                welt.loserCheck();
-//                                                if (!welt.winnerCheck().equals("")) {
-//                                                    JOptionPane.showMessageDialog(frame, welt.winnerCheck(), "DU HAST GEWONNEN!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("win.png"));
-//                                                    frame.dispose();
-//                                                    break;
-//                                                }
-//                                                int verschieben = Integer.parseInt(JOptionPane.showInputDialog(frame, "Sie haben das Land eingenommen. Wie viele Einheiten sollen zusätzlich in das eroberte Land?" + "\nGib eine Zahl zwischen 0 und " + (welt.idToLand(angriffsLand).getArmee() - 1) + " ein:", "Gewonnen!", JOptionPane.PLAIN_MESSAGE));
-//                                                welt.verschieben(welt.idToLand(angriffsLand), welt.idToLand(zielLand), verschieben, true);
-//                                            }
-//                                            fehler = false;
-//                                            buttonClicked = 0;
-//                                            angriffsLand = null;
-//                                            zielLand = null;
-//                                        } catch (ArmeeException | NachbarException | NotYourLandException exceptio) {
-//                                            JOptionPane.showMessageDialog(frame, exceptio.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
-//                                        } catch (NumberFormatException exception) {
-//                                            JOptionPane.showMessageDialog(frame, "Es muss eine Zahl eingegeben werden!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
-//                                        }
-//                                    } while (fehler);
-//                                } else {
-//                                    buttonClicked = 0;
-//                                    angriffsLand = null;
-//                                    zielLand = null;
-//                                }
-//                            }
+//                        catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
 //                        }
-//                    }
-//                }else {
-//                    JOptionPane.showMessageDialog(frame, "Klicke erst ein Land an!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
-//                }
+
+
+                        if (!stop4) {
+                            java.util.List<Integer> angriffZahlen = welt.würfel(einheitenAngriff);
+                            out.writeObject(angriffZahlen);     // übergibt die Würfelergebnisse des Angreifers
+                            out.flush();
+                            java.util.List<Integer> verteidigungsZahlen = welt.würfel(verteidigen);
+                            out.writeObject(verteidigungsZahlen);   // übergibt die Würfelergebnisse des Verteidigers
+                            out.flush();
+                            out.writeObject(welt.idToLand(zielLand).getBesitzer().getName());   // übergibt den Namen des Verteidigers
+                            out.flush();
+                            List<Integer> endTruppen = welt.Kampf(welt.idToLand(angriffsLand), einheitenAngriff, welt.idToLand(zielLand), verteidigen, angriffZahlen, verteidigungsZahlen);
+                            einheitenAngriff = 0;
+                            //Verschieben nach eroberung
+                            out.writeObject(welt.idToLand(zielLand).getErobert());  // übergibt boolean, ob das Land erobert wurde
+                            out.flush();
+                            if (welt.idToLand(zielLand).getErobert()) {
+                                welt.idToLand(zielLand).setErobert(false);
+
+
+                                boolean fehler = true;
+                                do {
+                                    try {
+                                        out.writeObject((welt.idToLand(angriffsLand).getArmee() - 1) != 0);
+                                        out.flush();
+                                        if ((welt.idToLand(angriffsLand).getArmee() - 1) != 0) {
+                                            welt.loserCheck();
+                                            out.writeObject(!welt.winnerCheck().equals(""));
+                                            out.flush();
+                                            if (!welt.winnerCheck().equals("")) {
+                                                out.writeObject(welt.winnerCheck());
+                                                out.flush();
+                                                //TODO game end event schicken
+                                                break;
+                                            }
+                                            out.writeObject(Integer.valueOf((welt.idToLand(angriffsLand).getArmee() - 1)));
+                                            out.flush();
+                                            int verschieben = (int) replyQueue.take();
+                                            welt.verschieben(welt.idToLand(angriffsLand), welt.idToLand(zielLand), verschieben, true);
+                                            out.writeObject(false);
+                                            out.flush();
+                                        }
+                                        fehler = false;
+                                        buttonClicked = 0;
+                                        angriffsLand = null;
+                                        zielLand = null;
+                                        updateClientWelt();
+                                    } catch (ArmeeException | NachbarException | NotYourLandException exceptio) {
+                                        out.writeObject(true);
+                                        out.flush();
+                                        out.writeObject(exceptio);
+                                        out.flush();
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                } while (fehler);
+                            } else {
+                                buttonClicked = 0;
+                                angriffsLand = null;
+                                zielLand = null;
+                                updateClientWelt();
+                            }
+
+                        }
+
                     }
                 }
             }
+
         }
 
     }
+//    public void zweitePhaseWeiter(int verteidigen) throws IOException {
+//        boolean stop4 = false;
+//        try {
+//            System.out.println("nach auslesen von zahl:" + verteidigen);
+//
+//            welt.verteidigen(verteidigen, welt.idToLand(zielLand));
+//            out.writeObject(false);
+//            out.flush();
+//        } catch (NumberFormatException | ArmeeException except) {
+//            stop4 = true;
+//            out.writeObject(stop4);
+//            out.flush();
+//            out.writeObject(except);
+//            out.flush();
+//        }
+//
+//
+//        if (!stop4) {
+//            java.util.List<Integer> angriffZahlen = welt.würfel(einheitenAngriff);
+//            out.writeObject(angriffZahlen);
+//            out.flush();
+//            java.util.List<Integer> verteidigungsZahlen = welt.würfel(verteidigen);
+//            out.writeObject(verteidigungsZahlen);
+//            out.flush();
+//            out.writeObject(welt.idToLand(zielLand).getBesitzer().getName());
+//            out.flush();
+//            List<Integer> endTruppen = welt.Kampf(welt.idToLand(angriffsLand), einheitenAngriff, welt.idToLand(zielLand), verteidigen, angriffZahlen, verteidigungsZahlen);
+//            einheitenAngriff = 0;
+//            //Verschieben nach eroberung
+//            out.writeObject(welt.idToLand(zielLand).getErobert());
+//            out.flush();
+//            if (welt.idToLand(zielLand).getErobert()) {
+//                welt.idToLand(zielLand).setErobert(false);
+//
+//
+//                boolean fehler = true;
+//                do {
+//                    try {
+//                        out.writeObject((welt.idToLand(angriffsLand).getArmee() - 1) != 0);
+//                        out.flush();
+//                        if ((welt.idToLand(angriffsLand).getArmee() - 1) != 0) {
+//                            welt.loserCheck();
+//                            out.writeObject(!welt.winnerCheck().equals(""));
+//                            out.flush();
+//                            if (!welt.winnerCheck().equals("")) {
+//                                out.writeObject(welt.winnerCheck());
+//                                out.flush();
+//                                //TODO game end event schicken
+//                                break;
+//                            }
+//                            out.writeObject(Integer.valueOf((welt.idToLand(angriffsLand).getArmee() - 1)));
+//                            out.flush();
+//                            int verschieben = (int) replyQueue.take();
+//                            welt.verschieben(welt.idToLand(angriffsLand), welt.idToLand(zielLand), verschieben, true);
+//                            out.writeObject(false);
+//                            out.flush();
+//                        }
+//                        fehler = false;
+//                        buttonClicked = 0;
+//                        angriffsLand = null;
+//                        zielLand = null;
+//                        updateClientWelt();
+//                    } catch (ArmeeException | NachbarException | NotYourLandException exceptio) {
+//                        out.writeObject(true);
+//                        out.flush();
+//                        out.writeObject(exceptio);
+//                        out.flush();
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                } while (fehler);
+//            } else {
+//                buttonClicked = 0;
+//                angriffsLand = null;
+//                zielLand = null;
+//                updateClientWelt();
+//            }
+//
+//        }
+//    }
 
-    public void drittePhase() throws IOException, ClassNotFoundException {
+    public void drittePhase() throws IOException, InterruptedException {
         out.writeObject(Integer.valueOf(2));
         out.flush();
         if(buttonClicked == 0){
             out.writeObject(Integer.valueOf(0));
             out.flush();
-            int auswahl = (Integer) in.readObject();
+            int auswahl = (Integer) replyQueue.take();
             if (auswahl == 1) {
                 try {
                     nextTurn();
@@ -431,9 +589,9 @@ public class ClientRequestProcessor {
         }else if(buttonClicked == 1){
             out.writeObject(Integer.valueOf(1));
             out.flush();
-            boolean countryClicked = (boolean) in.readObject();
+            boolean countryClicked = (boolean) replyQueue.take();
             if (countryClicked) {
-                angriffsLand = (String) in.readObject();
+                angriffsLand = (String) replyQueue.take();
                 boolean stop = false;
                 try {
                     welt.isIdGueltig(angriffsLand);
@@ -451,14 +609,14 @@ public class ClientRequestProcessor {
         } else if (buttonClicked == 2) {
             out.writeObject(Integer.valueOf(2));
             out.flush();
-            boolean countryClicked = (boolean) in.readObject();
+            boolean countryClicked = (boolean) replyQueue.take();
             if (countryClicked) {
-                zielLand = (String) in.readObject();
+                zielLand = (String) replyQueue.take();
                 out.writeObject(Integer.valueOf((welt.idToLand(angriffsLand).getArmee() - welt.idToLand(angriffsLand).getBewegteTruppen()-1)));
                 out.flush();
                 out.writeObject(welt.idToLand(angriffsLand).getName());
                 out.flush();
-                int verschieben = (Integer) in.readObject();
+                int verschieben = (Integer) replyQueue.take();
                 if(verschieben != -1){
                     try {
                         welt.verschieben(welt.idToLand(angriffsLand),welt.idToLand(zielLand),verschieben,false);

@@ -50,7 +50,7 @@ public class GameServer implements Serializable {
                 try {
                     c.handleClient();
                     up = true;
-                } catch (IOException | ClassNotFoundException | DoppelterNameException e) {
+                } catch (IOException | ClassNotFoundException | DoppelterNameException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }).start();

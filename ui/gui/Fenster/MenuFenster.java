@@ -28,53 +28,14 @@ public class MenuFenster extends JFrame {
         return spielerNamen;
     }
 
-    public void zeigeSetupPanel() {
-        startPanel.setVisible(false);
-        onlineMenu.setVisible(false);
-        setupPanel.setVisible(true);
-    }
-
     /**
-     * Lade Spielstand aus Speicher und schießt Menü
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
-    public void loadGame() throws IOException, ClassNotFoundException {
-        try{
-            welt.laden();
-            this.dispose();
-            new RisikoClientGUI(welt);
-        }catch (KeinSpeicherstandException e){
-            JOptionPane.showMessageDialog(this, "Kein Speicherstand vorhanden!");
-        }
-    }
-
-
-    public void startOnlineMode() {
-        startPanel.setVisible(false);
-        onlineMenu.setVisible(true);
-    }
-
-    /**
-     * Boxen für Spielerfarben
-     * @param x
-     * @param y
-     * @param w
-     * @param h
-     * @param hex
-     * @return
-     */
-    private JPanel farbbox(int x, int y, int w, int h, String hex) {
-        JPanel box = new JPanel();
-        box.setBackground(Color.decode(hex));
-        box.setBounds(x, y, w, h);
-        return box;
-    }
-
-    /**
-     * Start-Fenstereinstellung
-     * @param welt
-     * @throws RuntimeException
+     * Konstruktor für das Hauptmenü-Fenster.
+     * Initialisiert das JFrame mit Titel, Größe und unveränderlichem Layout,
+     * lädt das Hintergrundbild, richtet die Start-, Setup- und Online-Panels ein
+     * und stellt das Fenster sichtbar.
+     *
+     * @param welt die im Menü für Lade- und Start-Operationen verwendet wird
+     * @throws RuntimeException falls das Hintergrundbild oder andere Ressourcen nicht geladen werden können
      */
     public MenuFenster(Welt welt) throws RuntimeException {
         this.welt = welt;
@@ -125,9 +86,73 @@ public class MenuFenster extends JFrame {
         setVisible(true);
 
     }
+
+    /**
+     * Blendet das Start- und das Online-Menü aus und zeigt das Setup-Panel
+     * zur Spielererstellung an.
+     */
+    public void zeigeSetupPanel() {
+        startPanel.setVisible(false);
+        onlineMenu.setVisible(false);
+        setupPanel.setVisible(true);
+    }
+
+    /**
+     * Lädt einen gespeicherten Spielstand und startet die Risiko-Client-GUI.
+     * Schließt das aktuelle Menü-Fenster. Falls kein Speicherstand existiert,
+     * wird eine entsprechende Fehlermeldung angezeigt.
+     *
+     * @throws IOException            falls beim Lesen der Datei ein I/O-Fehler auftritt
+     * @throws ClassNotFoundException falls die gespeicherten Objekte nicht geladen werden können
+     */
+    public void loadGame() throws IOException, ClassNotFoundException {
+        try{
+            welt.laden();
+            this.dispose();
+            new RisikoClientGUI(welt);
+        }catch (KeinSpeicherstandException e){
+            JOptionPane.showMessageDialog(this, "Kein Speicherstand vorhanden!");
+        }
+    }
+
+    /**
+     * Wechselt in den Online-Modus,
+     * indem das Start-Panel ausgeblendet und das Online-Menü sichtbar gemacht wird.
+     */
+    public void startOnlineMode() {
+        startPanel.setVisible(false);
+        onlineMenu.setVisible(true);
+    }
+
+    /**
+     * Erstellt eine farbige Box zum Darstellen einer Spielerfarbe.
+     *
+     * @param x   X-Koordinate der Box
+     * @param y   Y-Koordinate der Box
+     * @param w   Breite der Box
+     * @param h   Höhe der Box
+     * @param hex Farbcode im Hex
+     * @return ein JPanel mit der angegebenen Farbe und Größe
+     */
+    private JPanel farbbox(int x, int y, int w, int h, String hex) {
+        JPanel box = new JPanel();
+        box.setBackground(Color.decode(hex));
+        box.setBounds(x, y, w, h);
+        return box;
+    }
+
+    /**
+     * Setzt die Haupt-Spieloberfläche, damit das Menü mit der RisikoClientGUI interagieren kann.
+     *
+     * @param gui die Instanz der RisikoClientGUI
+     */
     public void setGui(RisikoClientGUI gui) {
         this.gui = gui;
     }
+
+    /**
+     * Macht das Start-Panel sichtbar.
+     */
     public void startVisible(){
         startPanel.setVisible(true);
     }

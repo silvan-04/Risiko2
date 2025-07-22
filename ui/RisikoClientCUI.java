@@ -15,14 +15,23 @@ public class RisikoClientCUI {
    private Welt welt;
    private BufferedReader in;
 
+    /**
+     * Erzeugt einen neuen Konsolen-Client:
+     * initialisiert die Spielwelt und richtet den Eingabe-Reader für System.in ein.
+     *
+     * @throws IOException falls die Standard-Eingabe nicht geöffnet werden kann
+     */
    public RisikoClientCUI() throws IOException {
        this.welt=new Welt();
        this.in=new BufferedReader(new InputStreamReader(System.in));
    }
 
     /**
-     * Methode um Spieler zu erstellen. Liest input für Anzahl und Namen + setzt Spieler 1 am Zug.
-     * @throws IOException
+     * Fragt die Anzahl der Mitspieler ab und liest anschließend die Spielernamen ein.
+     * Legt für jeden Spieler eine neue Instanz in der Spielwelt an und setzt
+     * danach den ersten Spieler auf „ist am Zug“.
+     *
+     * @throws IOException wenn die Konsoleneingabe fehlschlägt
      */
    private void SpielerAuswahl() throws IOException {
        boolean gueltigeZahl=false;
@@ -57,8 +66,15 @@ public class RisikoClientCUI {
    }
 
     /**
-     * Methode um Spieler am anfang der Runde neue Truppen zu geben und auf Länder zu verteilen.
-     * @throws IOException
+     * Führt die Truppenaufstellung zu Beginn einer Runde durch.
+     *
+     * Wenn der aktuelle Spieler das Handkartenlimit erreicht hat,
+     * werden seine Karten gegen zusätzliche Einheiten eingetauscht.
+     * Anschließend (oder falls kein Kartentausch nötig ist) werden
+     * ihm neue Armeen zugewiesen und er kann sie beliebig auf seine Länder
+     * verteilen, bis keine Einheiten mehr übrig sind.
+     *
+     * @throws IOException falls die Konsoleneingabe fehlschlägt
      */
    public void armeeRundenanfang()throws IOException {
        if (welt.handkartenlimit(welt.aktiverSpieler())) {
@@ -105,8 +121,14 @@ public class RisikoClientCUI {
    }
 
     /**
-     * Der Spieler tauscht drei Karten gegen Armeen und verteilt diese auf seine Länder.
-     * @throws IOException
+     * Löst Karten gegen zusätzliche Armeen ein und verteilt diese.
+     *
+     * Der Spieler kann drei gültige Einheitskarten einlösen, um zusätzliche
+     * Einheiten zu erhalten. Mit "q" kann er den Vorgang abbrechen und nur
+     * seine regulären Armeen verteilen. Anschließend verteilt er die so
+     * erhaltenen Einheiten wieder auf seine Länder, bis keine mehr übrig sind.
+     *
+     * @throws IOException falls die Konsoleneingabe fehlschlägt
      */
     public void armeeMitKarten()throws IOException{
        boolean idGueltig=false;
@@ -220,8 +242,15 @@ public class RisikoClientCUI {
     }
 
     /**
-     * Der Spieler wählt ein eigenes und ein feindliches Nachbarland, bestimmt Angreifer und Verteidiger, würfelt den Kampf aus und verschiebt ggf. Truppen ins eroberte Land.
-     * @throws IOException
+     * Führt einen vollständigen Angriffsvorgang in der Konsole aus:
+     * 1. Auswahl des angreifenden eigenen Landes
+     * 2. Auswahl eines feindlichen Nachbarlandes
+     * 3. Eingabe der Angreifer-Einheiten und Validierung
+     * 4. Eingabe der Verteidiger-Einheiten durch den verteidigenden Spieler
+     * 5. Würfeln beider Seiten und Auswertung des Kampfergebnisses
+     * 6. Bei Eroberung: optionales Verschieben zusätzlicher Truppen ins eroberte Land
+     *
+     * @throws IOException wenn die Konsoleneingabe fehlschlägt
      */
     public void ganzerAngriff()throws IOException{
        boolean gueltigeID=false;
@@ -321,16 +350,17 @@ public class RisikoClientCUI {
    }
 
     /**
-     * einlesen von Konsole
-     * @return
-     * @throws IOException
+     * Liest eine Eingabezeile von der Konsole ein.
+     *
+     * @return der eingegebene Text
+     * @throws IOException falls ein Fehler beim Lesen aus dem Input-Stream auftritt
      */
     private String liesEingabe() throws IOException {
         return in.readLine();
     }
 
     /**
-     * Abfrage in Konsolle zur ersten Phase
+     * Gibt in der Konsole die verfügbaren Befehle für die erste Spielphase aus.
      */
     private void erstePhaseAusgabe() {
        System.out.print("Befehle: \n INFO: eigene Länder mit Einheiten 'e'");
@@ -346,7 +376,7 @@ public class RisikoClientCUI {
     }
 
     /**
-     * Abfrage in Konsolle zur zweiten Phase
+     * Gibt in der Konsole die verfügbaren Befehle für die zweite Spielphase aus.
      */
     private void zweitePhaseAusgabe() {
         System.out.print("Befehle: \n INFO: eigene Länder mit Einheiten 'e'");
@@ -363,7 +393,7 @@ public class RisikoClientCUI {
     }
 
     /**
-     * Abfrage in Konsolle zur dritten Phase
+     * Gibt in der Konsole die verfügbaren Befehle für die dritte Spielphase aus.
      */
     private void drittePhaseAusgabe() {
         System.out.print("Befehle: \n INFO: eigene Länder mit Einheiten 'e'");
@@ -381,13 +411,17 @@ public class RisikoClientCUI {
     }
 
     /**
-     * Diese Methode verarbeitet Befehle zur Anzeige:
-     * eigener Länder
-     * aller Länder
-     * feindlicher Nachbarn
-     * Missions- oder Einheitskarten sowie zum Einlösen oder Verteilen von Armeen
-     * @param line
-     * @throws IOException
+     * Verarbeitet die Konsoleneingabe in Phase 1 und führt die jeweils
+     * gewählte Aktion aus:
+     * – Listet alle eigenen Länder mit ihren Einheiten auf.
+     * – Listet alle Länder auf der Karte mit ihren Einheiten auf.
+     * – Zeigt für jedes eigene Land seine feindlichen Nachbarn an.
+     * – Gibt die aktuelle Missionsbeschreibung aus.
+     * – Zeigt die Einheitenkarten des aktiven Spielers an.
+     * – Startet die Phase zur Verteilung neuer Truppen.
+     * – Startet die Karteneinlöse-Phase.
+     * @param line der eingegebene Befehl (z. B. "e", "g", "n", "m", "k", "v" oder "c")
+     * @throws IOException falls bei der Konsoleneingabe ein Fehler auftritt
      */
     private void verarbeiteEingabeEins(String line) throws IOException {
         List<Land> spielerLaender=welt.landAusgabeVonSpieler(welt.aktiverSpieler());
@@ -427,6 +461,19 @@ public class RisikoClientCUI {
                 break;
         }
     }
+
+    /**
+     * Verarbeitet die Konsoleneingabe in Phase 2 (Angriff) und führt
+     * die jeweils gewählte Aktion aus:
+     * – Listet alle eigenen Länder mit ihren Einheiten auf.
+     * – Listet sämtliche Länder der Karte mit ihren Einheiten auf.
+     * – Zeigt für jedes eigene Land seine feindlichen Nachbarn an.
+     * – Gibt die Missionsbeschreibung des aktiven Spielers aus.
+     * – Zeigt die Einheitskarten des aktiven Spielers an.
+     * – Startet den kompletten Angriffsvorgang
+     * @param line der eingegebene Befehl: "e", "g", "n", "m", "k" oder "v"
+     * @throws IOException falls bei der Konsoleneingabe ein I/O-Fehler auftritt
+     */
     private void verarbeiteEingabeZwei(String line) throws IOException {
         List<Land> spielerLaender=welt.landAusgabeVonSpieler(welt.aktiverSpieler());
        switch (line) {
@@ -463,6 +510,18 @@ public class RisikoClientCUI {
        }
     }
 
+    /**
+     * Verarbeitet die Konsoleneingabe in Phase 3 (Truppenverschiebung) und führt
+     * die jeweils gewählte Aktion aus:
+     * – Listet alle eigenen Länder mit ihren Einheiten auf.
+     * – Listet sämtliche Länder der Karte mit ihren Einheiten auf.
+     * – Zeigt für jedes eigene Land seine feindlichen Nachbarn an.
+     * – Gibt die Missionsbeschreibung des aktiven Spielers aus.
+     * – Zeigt die Einheitenkarten des aktiven Spielers an.
+     * – Ermöglicht das Verschieben von Truppen zwischen zwei Ländern.
+     * @param line der eingegebene Befehl
+     * @throws IOException falls bei der Konsoleneingabe ein I/O-Fehler auftritt
+     */
     private void verarbeiteEingabeDrei(String line) throws IOException {
         List<Land> spielerLaender=welt.landAusgabeVonSpieler(welt.aktiverSpieler());
        switch (line) {
@@ -515,6 +574,26 @@ public class RisikoClientCUI {
         }
     }
 
+    /**
+     * Startet die Hauptschleife des Konsolen-Clients und steuert
+     * den Ablauf von Spielstart, Laden und den drei Spielphasen.
+     * Ablauf:
+     * Abfrage, ob ein neues Spiel gestartet oder ein gespeichertes Spiel geladen,
+     * Initialisierung der Welt (Länder erzeugen, verteilen, Karten erstellen, Kontinente aktualisieren)
+     * Rundenweise Ablauf der drei Phasen:
+     * Phase 1: Einheitenverteilung
+     * Phase 2: Angriff
+     * Phase 3: Truppenverschiebung
+     * In jeder Phase werden über eine Unterschleife
+     * Befehle eingelesen und mit den Methoden
+     *
+     * Am Ende jeder Runde: Überprüfung auf Spielende,
+     * Anzeige der Spielerstände, Wechsel zum nächsten Zug.
+     * Möglichkeit, den aktuellen Spielstand zu speichern
+     * oder das Programm jederzeit zu beenden.
+     *
+     * @throws IOException falls beim Einlesen der Benutzereingabe ein Fehler auftritt
+     */
     public void run() throws IOException {
       String input="";
       boolean eingabe=false;
@@ -591,7 +670,12 @@ public class RisikoClientCUI {
     }
 
 
-
+    /**
+     *  Programmstart für den Konsolen-Client.
+     *  Erzeugt eine RisikoClientCUI
+     *  startet die Hauptschleife
+     * @param args
+     */
     public static void main(String[] args) {
 
        try{

@@ -14,12 +14,21 @@ public class MissionErobereLänder implements Missionskarten, Serializable {
     Spieler spieler;
     Landverwaltung lv;
 
+    /**
+     * Erstellt eine Mission, bei der der Spieler eine bestimmte Anzahl Länder erobern muss:
+     * entweder 24 Länder oder 18 Länder mit jeweils mindestens 2 Einheiten.
+     *
+     * @param nurLänder  true für die 24-Länder-Mission, false für die 18-Länder-Mission mit 2 min Einheiten
+     * @param spieler    der Spieler, dem diese Mission zugewiesen wird
+     * @param lv         die Landverwaltung zum Überprüfen der Besitzverhältnisse und Armeen
+     */
     public MissionErobereLänder(boolean nurLänder, Spieler spieler, Landverwaltung lv) {
         this.nurLänder = nurLänder;
         this.spieler = spieler;
         this.lv = lv;
     }
 
+    //getter
     public boolean getNurLänder(){
         return nurLänder;
     }
@@ -28,8 +37,11 @@ public class MissionErobereLänder implements Missionskarten, Serializable {
     }
 
     /**
-     * Zum überprüfen, ob man die Mission mit den 24 oder 18 Ländern mit 2 Einheiten erfüllen muss und erfüllt hat
-     * @return
+     * Prüft, ob die Länder-Eroberungsmission erfüllt ist:
+     * – Bei nurLänder == true: der Spieler besitzt mindestens 24 Länder.
+     * – Sonst: der Spieler besitzt mindestens 18 Länder und hat in jedem davon min 2 Einheiten.
+     *
+     * @return true, wenn die Missionsbedingungen erfüllt sind, sonst false
      */
     public boolean istErfuellt() {
         if(nurLänder){
@@ -53,6 +65,12 @@ public class MissionErobereLänder implements Missionskarten, Serializable {
         }
     }
 
+    /**
+     * Liefert die Missionsbeschreibung als Text.
+     *
+     * @return "Erobere 24 Länder!" für die 24-Länder-Mission;
+     *         andernfalls "Erobere 18 Länder und setze in jedes Land mindestens 2 Einheiten!"
+     */
     public String beschreibung() {
         if(nurLänder){
             return "Erobere 24 Länder!";

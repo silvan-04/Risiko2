@@ -5,6 +5,11 @@ import Risiko.domain.exceptions.*;
 import Risiko.persistence.FilePersistenceManager;
 import java.io.Serializable;
 
+/**
+ * Repräsentiert eine Einheitskarte.
+ * Jede Karte ist einer bestimmten Provinz (Land) zugeordnet und trägt ein Symbol
+ * (z. B. "Soldat", "Reiter" oder "Kanone")
+ */
 public class Einheitskarte implements Serializable {
     private Land land;
     private String symbol;

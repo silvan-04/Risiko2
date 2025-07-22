@@ -24,11 +24,6 @@ public class RisikoClientGUI extends JFrame {
         setTitle("Risiko");
         this.welt = welt;
 
-
-//        UIManager.put("Panel.background", Color.DARK_GRAY);
-//        UIManager.put("OptionPane.background", Color.LIGHT_GRAY);
-//        UIManager.put("Button.background", Color.LIGHT_GRAY);
-
         this.setSize(800, 600);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);//maximiert (nicht vollbild)
 
@@ -84,10 +79,6 @@ public class RisikoClientGUI extends JFrame {
         setTitle("Risiko");
         this.welt = welt;
         this.gameClient = gameClient;
-
-//        UIManager.put("Panel.background", Color.DARK_GRAY);
-//        UIManager.put("OptionPane.background", Color.LIGHT_GRAY);
-//        UIManager.put("Button.background", Color.LIGHT_GRAY);
 
         this.setSize(800, 600);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);//maximiert (nicht vollbild)
@@ -169,11 +160,6 @@ public class RisikoClientGUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Welt welt = new Welt();
-//            try {
-//                new RisikoClientGUI(welt);
-//            } catch (DoppelterNameException e) {
-//                throw new RuntimeException(e);
-//            }
             JFrame fenster = null;
             try {
                 fenster = new MenuFenster(welt);

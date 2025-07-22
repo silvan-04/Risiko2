@@ -28,10 +28,14 @@ public class ActionPanelOnline extends JPanel  implements Action{
     private Spieler spieler;
 
     /**
+     * Erstellt das Aktions-Panel für den Online-Modus eines einzelnen Spielers.
+     * Das Panel enthält den Hauptaktionsknopf (Armee verteilen)
+     * sowie Buttons zum Anzeigen der Mission und der Handkarten.
      *
-     * @param welt
-     * @param frame
-     * @param weltPanel
+     * @param welt       die gemeinsame welt
+     * @param frame      das übergeordnete RisikoClientGUI-Fenster
+     * @param weltPanel  das Panel, das das eigentliche Spielfeld rendert
+     * @param spieler    der lokale Spieler, für den dieses Panel seine Aktionen bereitstellt
      */
     public ActionPanelOnline(Welt welt, RisikoClientGUI frame, WeltPanel weltPanel,Spieler spieler) {
         super();
@@ -68,12 +72,30 @@ public class ActionPanelOnline extends JPanel  implements Action{
         });
 
     }
+
+    /**
+     * Aktiviert oder deaktiviert den Hauptaktionsknopf.
+     *
+     * @param enabled  true, um den Knopf zu aktivieren; false, um ihn zu deaktivieren
+     */
     public void setButton(boolean enabled) {
         aktionsKnopf.setEnabled(enabled);
     }
+
+    /**
+     * Gibt den Haupt-Aktionsknopf dieses Panels zurück.
+     * Über diesen Knopf kann der Client Aktionen (z.B. Armee verteilen, angreifen, verschieben) auslösen.
+     *
+     * @return der JButton, der für Spielaktionen verwendet wird
+     */
     public JButton getActionbutton() {
         return aktionsKnopf;
     }
+
+    /**
+     *
+     * @param spieler
+     */
     public void setSpieler(Spieler spieler){
         this.spieler=spieler;
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FilePersistenceManager implements Serializable {
-    private BufferedReader reader = null;
+    private transient BufferedReader reader = null;
     private transient PrintWriter writer = null;
 
     /**

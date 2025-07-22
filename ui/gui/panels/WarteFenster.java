@@ -1,6 +1,8 @@
 package Risiko.ui.gui.panels;
 
+import Risiko.Client.GameClient;
 import Risiko.Server.src.GameServer;
+import Risiko.events.GameControlEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,7 @@ public class WarteFenster extends JFrame {
     private JButton play;
     private boolean mode;
     private JLabel label;
+    private boolean laden;
 
     /**
      * Erstellt ein Fenster, in dem über eine Fortschrittsanzeige und einen Text ersichtlich ist,
@@ -18,9 +21,9 @@ public class WarteFenster extends JFrame {
      * @param mode Modus (0 = Spiel erstellen, 1 = Spiel beitreten)
      */
 
-    public WarteFenster(boolean mode) {
+    public WarteFenster(boolean mode,boolean laden) {
         this.mode = mode;
-
+        this.laden = laden;
         JPanel main = new JPanel(new BorderLayout(10, 20));
         main.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         main.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
@@ -56,30 +59,52 @@ public class WarteFenster extends JFrame {
      * und ob die erforderliche Spielerzahl erreicht wurde.
      * Ab zwei Spielern färbt sich die Fortschrittsleiste grün und der Host kann das Spiel starten;
      * ab sechs Spielern erfolgt der automatische Spielstart.
-     * @param anzahl Die aktuell beigetretenen Spieler
+     * @param gce GameControlEvent mit Infos zur Spieleranzahl
      */
-    public void updateAnzahl(int anzahl) {
-        this.label.setText(String.valueOf(anzahl));
+    public void updateAnzahl(GameControlEvent gce) {
+        if(!laden) {
+            int anzahl = gce.getPlayerCount();
+            this.label.setText(String.valueOf(anzahl));
 
-        progressBar.setValue(anzahl);
-        progressBar.setString(anzahl + " / " + progressBar.getMaximum());
-        label.setText(anzahl + " / " + progressBar.getMaximum() + " Spieler");
-        if (anzahl < 2) {
-            progressBar.setForeground(Color.lightGray);
-        } else {
-            progressBar.setForeground(new Color(100, 200, 100));
-        }
-        boolean canStart = mode && (anzahl >= 2 && anzahl <= progressBar.getMaximum());
-        play.setEnabled(canStart);
+            progressBar.setValue(anzahl);
+            progressBar.setString(anzahl + " / " + progressBar.getMaximum());
+            label.setText(anzahl + " / " + progressBar.getMaximum() + " Spieler");
+            if (anzahl < 2) {
+                progressBar.setForeground(Color.lightGray);
+            } else {
+                progressBar.setForeground(new Color(100, 200, 100));
+            }
+            boolean canStart = mode && (anzahl >= 2 && anzahl <= progressBar.getMaximum());
+            play.setEnabled(canStart);
 
-        if (!mode) {
-            play.setEnabled(false);
+            if (!mode) {
+                play.setEnabled(false);
+            }
+            this.label.repaint();
+            this.label.revalidate();
+        }else{
+            int anzahl = gce.getVerbundeneSpieler();
+            int max = gce.getPlayerCount();
+            this.label.setText(String.valueOf(anzahl));
+
+            progressBar.setValue(anzahl);
+            progressBar.setMaximum(max);
+            progressBar.setString(anzahl + " / " + progressBar.getMaximum());
+            label.setText(anzahl + " / " + progressBar.getMaximum() + " Spieler");
+            if (anzahl < 2) {
+                progressBar.setForeground(Color.lightGray);
+            } else {
+                progressBar.setForeground(new Color(100, 200, 100));
+            }
+            boolean canStart = mode && (anzahl >= 2 && anzahl <= progressBar.getMaximum());
+            play.setEnabled(canStart);
+
+            if (!mode) {
+                play.setEnabled(false);
+            }
+            this.label.repaint();
+            this.label.revalidate();
         }
-        this.label.repaint();
-        this.label.revalidate();
-    }
-    public void getAnzahl() {
-        updateAnzahl(progressBar.getValue());
     }
     public JButton getPlay(){
         return this.play;

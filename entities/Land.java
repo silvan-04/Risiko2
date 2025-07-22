@@ -25,6 +25,18 @@ public class Land  implements Serializable {
         this.erobert=false;
         this.bewegteTruppen=0;
     }
+
+    /**
+     * Erzeugt ein Land mit allen übergebenen Eigenschaften.
+     *
+     * @param name            Name des Landes
+     * @param armee           aktuelle Zahl der Armeen in diesem Land
+     * @param besitzer        Spieler, dem dieses Land gehört
+     * @param id              eindeutige ID des Landes
+     * @param nachbarLaender  Liste der IDs benachbarter Länder
+     * @param erobert         true, wenn das Land in dieser Runde erobert wurde
+     * @param bewegteTruppen  bereits im aktuellen Zug verschobene Truppen
+     */
     public Land(String name, int armee, Spieler besitzer, String id, List <String> nachbarLaender, boolean erobert, int bewegteTruppen) {
         this.name = name;
         this.armee=armee;
@@ -72,7 +84,13 @@ public class Land  implements Serializable {
     public void setBewegteTruppen(int bewegteTruppen) {
         this.bewegteTruppen += bewegteTruppen;
     }
-    //toString-Methode
+
+    /**
+     * Gibt eine lesbare Beschreibung des Landes zurück,
+     * bestehend aus Name, ID, Besitzer und aktueller Armeeanzahl.
+     *
+     * @return String mit Landesinformationen
+     */
     public String toString(){
         return (this.name+" mit der ID: \"" + this.id +"\", gehört "+ this.besitzer.getName() + " mit " + this.armee + " Einheiten.");
     }

@@ -10,7 +10,7 @@ f
 0
 Nordwest-Territorien
 1
-1
+2
 nt
 4
 ak
@@ -45,7 +45,7 @@ f
 0
 Quebec
 1
-1
+2
 qb
 3
 gr
@@ -55,7 +55,7 @@ f
 0
 Grönland
 1
-1
+2
 gr
 4
 nt
@@ -88,7 +88,7 @@ f
 0
 Mittelamerika
 1
-2
+1
 cm
 3
 unw
@@ -108,7 +108,7 @@ f
 0
 Peru
 1
-2
+1
 pe
 3
 ve
@@ -118,7 +118,7 @@ f
 0
 Brasilien
 1
-1
+2
 br
 4
 ve
@@ -138,7 +138,7 @@ f
 0
 Island
 1
-1
+2
 is
 3
 sk
@@ -159,7 +159,7 @@ f
 0
 Großbritannien
 1
-1
+2
 gb
 4
 is
@@ -170,7 +170,7 @@ f
 0
 Nordeuropa
 1
-1
+2
 eun
 5
 sk
@@ -182,7 +182,7 @@ f
 0
 Westeuropa
 1
-2
+1
 euw
 4
 gb
@@ -193,7 +193,7 @@ f
 0
 Südeuropa
 1
-2
+1
 eus
 6
 euw
@@ -205,7 +205,7 @@ me
 f
 0
 Ukraine
-1
+7
 1
 ua
 6
@@ -219,7 +219,7 @@ f
 0
 Nordafrika
 1
-2
+1
 an
 6
 br
@@ -232,7 +232,7 @@ f
 0
 Ägypten
 1
-1
+2
 eg
 4
 an
@@ -255,7 +255,7 @@ f
 0
 Kongo
 1
-1
+2
 ko
 3
 an
@@ -265,7 +265,7 @@ f
 0
 Südafrika
 1
-2
+1
 as
 3
 ko
@@ -275,7 +275,7 @@ f
 0
 Madagaskar
 1
-2
+1
 ma
 2
 as
@@ -283,8 +283,8 @@ ao
 f
 0
 Afghanistan
-10
 1
+2
 af
 5
 ua
@@ -308,7 +308,7 @@ af
 f
 0
 Indien
-5
+1
 2
 in
 4
@@ -340,7 +340,7 @@ f
 0
 Kamtschatka
 1
-2
+1
 ka
 4
 ya
@@ -362,8 +362,8 @@ ka
 f
 0
 Mittlerer Osten
-4
-2
+1
+1
 me
 6
 ua
@@ -373,10 +373,10 @@ af
 in
 ao
 f
-3
+0
 Sibirien
 1
-2
+1
 mn
 5
 ur
@@ -399,7 +399,7 @@ f
 0
 Jakutien
 1
-2
+1
 ya
 3
 mn
@@ -419,7 +419,7 @@ f
 0
 Indonesien
 1
-1
+2
 id
 3
 aso

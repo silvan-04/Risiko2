@@ -17,7 +17,7 @@ public class RoundRect extends JPanel {
 
     /**
      * Spieler in werden in Runde angezeigt + aktiver Spieler weird gekennzeichnet
-     * @param g the <code>Graphics</code> object to protect
+     * @param g das Graphics-Objekt zum Zeichnen
      */
     @Override
     protected void paintComponent(Graphics g) {

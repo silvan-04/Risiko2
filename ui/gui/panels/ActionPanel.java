@@ -27,10 +27,14 @@ public class ActionPanel extends JPanel  implements Action{
     private JButton aktionsKnopf, kartenKnopf, missionsKnopf;
 
     /**
+     * Erzeugt das Aktions-Panel mit Buttons für
+     * • Armee verteilen / Angreifen / Verschieben
+     * • Karten anzeigen
+     * • Mission anzeigen
      *
-     * @param welt
-     * @param frame
-     * @param weltPanel
+     * @param welt      die Spielwelt (Logik)
+     * @param frame     das übergeordnete Fenster (für Dialoge)
+     * @param weltPanel das Panel, in dem Länder angeklickt werden
      */
     public ActionPanel(Welt welt, RisikoClientGUI frame, WeltPanel weltPanel) {
         super();
@@ -41,6 +45,7 @@ public class ActionPanel extends JPanel  implements Action{
         this.buttonClicked = 0;
         this.einheiten = 0;
 
+        // Haupt-Aktionsknopf
         aktionsKnopf = new JButton("Armee verteilen!");
         add(aktionsKnopf, BorderLayout.EAST);
 
@@ -355,6 +360,9 @@ public class ActionPanel extends JPanel  implements Action{
         kartenKnopf = new JButton("Karten");
         add(kartenKnopf, BorderLayout.CENTER);
 
+        /**
+         * Zeigt dem aktuellen Spieler seine Missionsbeschreibung in einem Informationsdialog an.
+         */
         missionsKnopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -363,6 +371,10 @@ public class ActionPanel extends JPanel  implements Action{
             }
         });
 
+        /**
+         * Öffnet einen Dialog, der alle Einheitskarten des aktuellen Spielers anzeigt.
+         * Falls keine Karten vorhanden sind, wird eine entsprechende Meldung ausgegeben.
+         */
         kartenKnopf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -372,6 +384,7 @@ public class ActionPanel extends JPanel  implements Action{
         });
 
     }
+
     public void setButton(boolean enabled) {
         aktionsKnopf.setEnabled(enabled);
     }
