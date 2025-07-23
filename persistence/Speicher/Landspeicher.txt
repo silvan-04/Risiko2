@@ -65,8 +65,8 @@ is
 f
 0
 Weststaaten
-1
-1
+3
+2
 unw
 4
 ab
@@ -87,8 +87,8 @@ cm
 f
 0
 Mittelamerika
-1
-1
+3
+2
 cm
 3
 unw
@@ -179,10 +179,10 @@ ua
 euw
 eus
 f
-0
+1
 Westeuropa
 1
-1
+2
 euw
 4
 gb
@@ -192,7 +192,7 @@ an
 f
 0
 Südeuropa
-1
+13
 1
 eus
 6
@@ -205,8 +205,8 @@ me
 f
 0
 Ukraine
-7
-1
+2
+2
 ua
 6
 sk
@@ -219,7 +219,7 @@ f
 0
 Nordafrika
 1
-1
+2
 an
 6
 br
@@ -283,7 +283,7 @@ ao
 f
 0
 Afghanistan
-1
+8
 2
 af
 5
@@ -295,8 +295,8 @@ in
 f
 0
 China
-1
-1
+6
+2
 ch
 6
 ur
@@ -308,7 +308,7 @@ af
 f
 0
 Indien
-1
+8
 2
 in
 4
@@ -339,7 +339,7 @@ mo
 f
 0
 Kamtschatka
-1
+5
 1
 ka
 4
@@ -375,7 +375,7 @@ ao
 f
 0
 Sibirien
-1
+6
 1
 mn
 5
@@ -387,8 +387,8 @@ ya
 f
 0
 Ural
+7
 1
-2
 ur
 4
 ua
@@ -398,7 +398,7 @@ mn
 f
 0
 Jakutien
-1
+5
 1
 ya
 3

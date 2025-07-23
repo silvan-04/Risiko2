@@ -349,10 +349,11 @@ public class Welt implements Serializable {
      * @return verkettete Siegesnachrichten (leer, falls keine Mission erfüllt)
      */
     public String winnerCheck(){
-    List<String> siegerNachrichten = new ArrayList<String>();
+        List<String> siegerNachrichten = new ArrayList<String>();
+        kontinentAktualisieren();
         for(Missionskarten mission:kv.getMissionskarten()){
             if(mission.istErfuellt()){
-                siegerNachrichten.add(mission.siegerNachricht()) ;
+                siegerNachrichten.add(mission.siegerNachricht());
             }
         }
         String winner = "" ;
@@ -508,7 +509,7 @@ public class Welt implements Serializable {
      * Lädt den gesamten Spielstand aus Persistenzdateien:
      * Spieler, Länder, Kontinentbesitzer und Kartenverwaltung werden reihenweise wiederhergestellt.
      *
-     * @throws IOException                  bei I/O-Fehlern beim Datei­zugriff
+     * @throws IOException                  bei I/O-Fehlern beim Datei zugriff
      * @throws ClassNotFoundException       wenn eine geladene Klasse nicht gefunden wird
      * @throws KeinSpeicherstandException   wenn kein gültiger Spielstand vorhanden ist
      */

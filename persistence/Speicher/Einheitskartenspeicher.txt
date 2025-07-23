@@ -1,7 +1,5 @@
-42
+35
 ak
-Kanone
-nt
 Kanone
 ab
 Kanone
@@ -9,15 +7,11 @@ on
 Kanone
 qb
 Kanone
-gr
-Kanone
 unw
 Kanone
 une
 Kanone
 cm
-Kanone
-ve
 Kanone
 pe
 Kanone
@@ -31,8 +25,6 @@ sk
 Soldat
 gb
 Soldat
-eun
-Soldat
 euw
 Soldat
 eus
@@ -44,8 +36,6 @@ Soldat
 eg
 Soldat
 ao
-Soldat
-ko
 Soldat
 as
 Soldat
@@ -63,8 +53,6 @@ jp
 Reiter
 ka
 Reiter
-mo
-Reiter
 me
 Reiter
 mn
@@ -80,6 +68,4 @@ Reiter
 ng
 Reiter
 auw
-Reiter
-auo
 Reiter

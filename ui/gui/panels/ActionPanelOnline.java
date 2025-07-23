@@ -25,6 +25,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
     private String zielLand;
     private int einheiten;
     private JButton aktionsKnopf;
+    private JButton kartenKnopf;
     private Spieler spieler;
 
     /**
@@ -52,7 +53,7 @@ public class ActionPanelOnline extends JPanel  implements Action{
 
         JButton missionsKnopf = new JButton("Mission");
         add(missionsKnopf, BorderLayout.WEST);
-        JButton kartenKnopf = new JButton("Karten");
+        kartenKnopf = new JButton("Karten");
         add(kartenKnopf, BorderLayout.CENTER);
 
         missionsKnopf.addActionListener(new ActionListener() {
@@ -73,6 +74,19 @@ public class ActionPanelOnline extends JPanel  implements Action{
 
     }
 
+    public void updateKartenListener(){
+        for(ActionListener al : kartenKnopf.getActionListeners()){
+            kartenKnopf.removeActionListener(al);
+        }
+
+        kartenKnopf.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                JOptionPane.showMessageDialog(frame, !spieler.getEinheitskarten().isEmpty() ? spieler.getEinheitskarten() : "Du hast keine Karten im Besitz!", "Deine Karten!", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+        });
+    }
     /**
      * Aktiviert oder deaktiviert den Hauptaktionsknopf.
      *
@@ -98,5 +112,8 @@ public class ActionPanelOnline extends JPanel  implements Action{
      */
     public void setSpieler(Spieler spieler){
         this.spieler=spieler;
+        updateKartenListener();
+        this.revalidate();
+        this.repaint();
     }
 }

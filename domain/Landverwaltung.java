@@ -415,7 +415,7 @@ public class Landverwaltung implements Serializable {
      */
     public boolean asienBesitzer(Spieler spieler){
         for (Spieler land : asien) {
-            if (!(land == spieler)) {
+            if (!(land.getName().equals(spieler.getName()))) {
                 return false;
             }
         }
@@ -430,7 +430,7 @@ public class Landverwaltung implements Serializable {
      */
     public boolean europaBesitzer(Spieler spieler){
         for (Spieler land : europa) {
-            if(!(land == spieler)){
+            if (!(land.getName().equals(spieler.getName()))) {
                 return false;
             }
         }
@@ -445,7 +445,7 @@ public class Landverwaltung implements Serializable {
      */
     public boolean afrikaBesitzer(Spieler spieler){
         for (Spieler land : afrika) {
-            if(!(land == spieler)){
+            if (!(land.getName().equals(spieler.getName()))) {
                 return false;
             }
         }
@@ -460,7 +460,7 @@ public class Landverwaltung implements Serializable {
      */
     public boolean australienBesitzer(Spieler spieler){
         for (Spieler land : australien) {
-            if(!(land == spieler)){
+            if (!(land.getName().equals(spieler.getName()))) {
                 return false;
             }
         }
@@ -475,7 +475,7 @@ public class Landverwaltung implements Serializable {
      */
     public boolean nordamerikaBesitzer(Spieler spieler){
         for (Spieler land : nordamerika) {
-            if(!(land == spieler)){
+            if (!(land.getName().equals(spieler.getName()))) {
                 return false;
             }
         }
@@ -490,7 +490,7 @@ public class Landverwaltung implements Serializable {
      */
     public boolean suedamerikaBesitzer(Spieler spieler){
         for (Spieler land : suedamerika) {
-            if(!(land == spieler)){
+            if (!(land.getName().equals(spieler.getName()))) {
                 return false;
             }
         }

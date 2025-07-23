@@ -76,7 +76,6 @@ public class OnlineMenuPanel extends JPanel{
 
         spielLaden.addActionListener(e->    {
             // Server starten
-            System.out.println("vor gameserver");
             final boolean[] speicherstand = new boolean[1];
             new Thread(() -> {
                 GameServer gameServer = null;
@@ -166,7 +165,6 @@ public class OnlineMenuPanel extends JPanel{
                 if (mode) {
                     parent.dispose();
                     // Server starten
-                    System.out.println("vor gameserver");
                     new Thread(() -> {
                         GameServer gameServer = null;
                         try {

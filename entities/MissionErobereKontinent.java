@@ -71,12 +71,12 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
      */
     public boolean istErfuellt() {
                 for (Spieler land : kontinent1) {
-                    if (!(land == spieler)) {
+                    if (!(land.getName().equals(spieler.getName()))) {
                         return false;
                     }
                 }
                 for (Spieler land : kontinent2) {
-                    if (!(land == spieler)) {
+                    if (!(land.getName().equals(spieler.getName()))) {
                         return false;
                     }
                 }

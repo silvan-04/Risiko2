@@ -21,9 +21,6 @@ public class GameActionEvent extends GameEvent {
     private final String zielLand;
 
     public GameActionEvent(Spieler player,GameActionEventType type,Welt welt) {
-        // ATTACK: Spieler wird angegriffen
-        // NEW_OWNER: Spieler ist neuer Eigentümer (einer Provinz)
-        // BUY_ITEM: Spieler kann Item kaufen
         super(player);
         this.verteidiger=null;
         this.type = type;
@@ -34,9 +31,6 @@ public class GameActionEvent extends GameEvent {
     }
     //Attack konstruktor
     public GameActionEvent(Spieler player, Spieler verteidiger, String message, String zielLand, Welt welt) {
-        // ATTACK: Spieler wird angegriffen
-        // NEW_OWNER: Spieler ist neuer Eigentümer (einer Provinz)
-        // BUY_ITEM: Spieler kann Item kaufen
         super(player);
         this.verteidiger=verteidiger;
         this.message=message;
@@ -47,9 +41,6 @@ public class GameActionEvent extends GameEvent {
     }
     //Verteidigung Konstruktor
     public GameActionEvent(Spieler player, Welt welt,int verteidigen) {
-        // ATTACK: Spieler wird angegriffen
-        // NEW_OWNER: Spieler ist neuer Eigentümer (einer Provinz)
-        // BUY_ITEM: Spieler kann Item kaufen
         super(player);
         this.verteidiger=null;
         this.verteidigen= verteidigen;
