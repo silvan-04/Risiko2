@@ -1,4 +1,4 @@
-35
+34
 ak
 Kanone
 ab
@@ -14,8 +14,6 @@ Kanone
 cm
 Kanone
 pe
-Kanone
-br
 Kanone
 ar
 Kanone

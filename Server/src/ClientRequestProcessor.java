@@ -233,12 +233,14 @@ public class ClientRequestProcessor {
             Einheitskarte karte2;
             Einheitskarte karte3;
             if (kartenEntscheidung == 0 ){  // wenn der Spieler Karten einlösen möchte
+                out.writeObject(welt.aktiverSpieler().getEinheitskarten());
+                out.flush();
                 karte1 = (Einheitskarte)replyQueue.take();
                 karte2 = (Einheitskarte)replyQueue.take();
                 karte3 = (Einheitskarte)replyQueue.take();
 
                 try {
-                    einheiten = welt.armeeVerteilung() + welt.kartenEinlösen(karte1, karte2, karte3);
+                    einheiten = welt.kartenEinlösen(karte1, karte2, karte3);
                     out.writeObject(true);
                     out.flush();
                     buttonClicked++;
@@ -277,10 +279,10 @@ public class ClientRequestProcessor {
                     out.flush();
                 }
                 if (!stop) {
-                    int einheiten = (int)replyQueue.take();     // empfängt maximale Zahl an Einheiten
                     int verschobenEinheiten =(int) replyQueue.take();   // empfängt wie viele Einheiten der Spieler einsetzen möchte
                     try {
                         welt.aktiverSpieler().setEinheitenRunde(welt.truppenPlatzieren(welt.aktiverSpieler().getEinheitenRunde() + einheiten, verschobenEinheiten, id));
+                        einheiten = 0;
                         buttonClicked = 0;
                         out.writeObject(true);
                         out.flush();
@@ -356,7 +358,7 @@ public class ClientRequestProcessor {
                     out.flush();
                     out.writeObject(exc);
                     out.flush();
-                    buttonClicked = 1;
+                    buttonClicked = 0;
                 }
                 if (!stop2) {
                     boolean stop3 = false;
@@ -369,6 +371,9 @@ public class ClientRequestProcessor {
                     } else if (welt.idToLand(angriffsLand).getArmee() > 1) {
                         out.writeObject("Max:1 Einheiten.");
                         out.flush();
+                    } else {
+                        out.writeObject("");
+                        out.flush();
                     }
                     stop3 = (boolean) replyQueue.take();
                     if (!stop3) {
@@ -378,14 +383,13 @@ public class ClientRequestProcessor {
                             out.writeObject(stop3);
                             out.flush();
                         } catch (ArmeeException | NachbarException excep) {
+                            buttonClicked=0;
                             stop3 = true;
                             out.writeObject(stop3);
                             out.flush();
                             out.writeObject(excep);
                             out.flush();
                         }
-                    }
-                    if (!stop3) {
                         boolean stop4 = false;
                         int verteidigen = 0;
                         String möglicheEinheiten = null;
@@ -482,6 +486,15 @@ public class ClientRequestProcessor {
 
                         }
 
+                    } else {
+                        Exception e = (Exception) replyQueue.take();
+                        out.writeObject(true);
+                        out.flush();
+                        if (e instanceof ArmeeException) {
+                            out.writeObject(e);
+                            out.flush();
+                        }
+                        buttonClicked = 0;
                     }
                 }
             }
@@ -550,6 +563,12 @@ public class ClientRequestProcessor {
                         out.writeObject(excepti);
                         out.flush();
                     }
+                }else{
+                    out.writeObject(true);
+                    out.flush();
+                    NumberFormatException e = new NumberFormatException();
+                    out.writeObject(e);
+                    out.flush();
                 }
                 buttonClicked = 0;
             }

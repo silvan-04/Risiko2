@@ -15,6 +15,7 @@ public class Landverwaltung implements Serializable {
     private List<Spieler> australien=new ArrayList();
     private List<Spieler> nordamerika=new ArrayList();
     private List<Spieler> suedamerika=new ArrayList();
+    private Map<String,List<Spieler>> nameToList = new HashMap<>();
     private FilePersistenceManager pm = new FilePersistenceManager();
 
     // getter
@@ -754,5 +755,17 @@ public class Landverwaltung implements Serializable {
             }
         }
         return result;
+    }
+
+    public List<Spieler> nameToList(String name){
+        kontinentAktualisieren();
+        nameToList.clear();
+        nameToList.put("Asien",asien);
+        nameToList.put("Europa",europa);
+        nameToList.put("Afrika",afrika);
+        nameToList.put("Australien",australien);
+        nameToList.put("Nordamerika",nordamerika);
+        nameToList.put("Südamerika",suedamerika);
+        return nameToList.get(name);
     }
 }

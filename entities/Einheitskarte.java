@@ -21,6 +21,9 @@ public class Einheitskarte implements Serializable {
     }
     //Getter
     public Land getLand() { return land; }
+    public String getLandToString(){
+        return land.getName();
+    }
     public String getSymbol() { return symbol; }
     //toString-Methode
     public String toString(){

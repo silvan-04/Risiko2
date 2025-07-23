@@ -70,6 +70,8 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
      * @return true, wenn die Missionsbedingungen erfüllt sind, sonst false
      */
     public boolean istErfuellt() {
+                kontinent1 = lv.nameToList(kontinent1Name);
+                kontinent2 = lv.nameToList(kontinent2Name);
                 for (Spieler land : kontinent1) {
                     if (!(land.getName().equals(spieler.getName()))) {
                         return false;
@@ -131,6 +133,6 @@ public class MissionErobereKontinent implements Missionskarten, Serializable {
      * @return Text mit Spielername und Missionsbeschreibung
      */
     public String siegerNachricht(){
-        return this.spieler.getName() + " hat gewonnen! \n Er hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
+        return this.spieler.getName() + " hat gewonnen! \nEr hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
     }
 }

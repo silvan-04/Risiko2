@@ -122,6 +122,7 @@ public class MenuFenster extends JFrame {
     public void startOnlineMode() {
         startPanel.setVisible(false);
         onlineMenu.setVisible(true);
+        onlineMenu.getZurueckButton().setVisible(true);
     }
 
     /**

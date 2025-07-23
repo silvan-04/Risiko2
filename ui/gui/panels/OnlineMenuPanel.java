@@ -23,8 +23,9 @@ import java.util.List;
 public class OnlineMenuPanel extends JPanel{
     private JLabel name1Label;
     private JTextField name1Field;
-    private JButton playButton;
+    private JButton playButton,zurückOnline;
     private boolean mode;
+
 
     /**
      * Erstellt das Panel für das Onlinespiel. Hier kann man ein neues Spiel erstellen oder einem bestehenden beitreten.
@@ -42,14 +43,16 @@ public class OnlineMenuPanel extends JPanel{
         JButton spielLaden = new JButton("Spiel laden");
         JButton spielBeitretenNeu = new JButton("neuem Spiel beitreten");
         JButton spielBeitretenLaden = new JButton("geladenem Spiel beitreten");
-        JButton zurück = new JButton("Zurück");
+        zurückOnline = new JButton("Zurück");
 
         neuesSpiel.setBounds(350, 150, 140, 50);
         spielBeitreten.setBounds(350, 220, 300, 50);
         spielLaden.setBounds(510, 150, 140, 50);
         spielBeitretenNeu.setBounds(350,150,300,50);
         spielBeitretenLaden.setBounds(350,220,300,50);
-        zurück.setBounds(50, 500, 100, 40);
+        zurückOnline.setBounds(50, 500, 100, 40);
+        zurückOnline.setVisible(false);
+        add(zurückOnline);
 
         name1Label = new JLabel("  Spieler:");
         name1Label.setBounds(50, 130, 100, 25);
@@ -73,6 +76,7 @@ public class OnlineMenuPanel extends JPanel{
         this.add(playButton);
         spielBeitretenNeu.setVisible(false);
         spielBeitretenLaden.setVisible(false);
+
 
         spielLaden.addActionListener(e->    {
             // Server starten
@@ -103,7 +107,6 @@ public class OnlineMenuPanel extends JPanel{
                         throw new RuntimeException(ex);
                     }
                 }while(!clientConnected);
-
         });
 
         spielBeitretenNeu.addActionListener(e->    {
@@ -116,6 +119,7 @@ public class OnlineMenuPanel extends JPanel{
             name1Label.setVisible(true);
             name1Field.setVisible(true);
             playButton.setVisible(true);
+            zurückOnline.setVisible(true);
             repaint();
             revalidate();
         });
@@ -139,6 +143,7 @@ public class OnlineMenuPanel extends JPanel{
             name1Label.setVisible(true);
             name1Field.setVisible(true);
             playButton.setVisible(true);
+            zurückOnline.setVisible(true);
             repaint();
             revalidate();
         });
@@ -150,6 +155,7 @@ public class OnlineMenuPanel extends JPanel{
             spielBeitretenLaden.setVisible(true);
             spielBeitretenNeu.setVisible(true);
             spielLaden.setVisible(false);
+            zurückOnline.setVisible(true);
             repaint();
             revalidate();
         });
@@ -205,9 +211,8 @@ public class OnlineMenuPanel extends JPanel{
          * und fügt das StartPanel hinzu.
          */
 
-        zurück.addActionListener(e -> {
+        zurückOnline.addActionListener(e -> {
             parent.startVisible();
-            setVisible(false);
             neuesSpiel.setVisible(true);
             spielBeitreten.setVisible(true);
             spielLaden.setVisible(true);
@@ -215,14 +220,19 @@ public class OnlineMenuPanel extends JPanel{
             name1Field.setVisible(false);
             spielBeitretenLaden.setVisible(false);
             spielBeitretenNeu.setVisible(false);
+            zurückOnline.setVisible(false);
         });
 
         add(neuesSpiel);
         add(spielBeitreten);
         add(spielLaden);
-        add(zurück);
+
         add(spielBeitretenNeu);
         add(spielBeitretenLaden);
+    }
+
+    public JButton getZurueckButton(){
+        return zurückOnline;
     }
 
     public boolean getMode() {

@@ -79,6 +79,6 @@ public class MissionErobereLänder implements Missionskarten, Serializable {
         }
     }
     public String siegerNachricht(){
-        return this.spieler.getName() + " hat gewonnen!!!!!!! \n Er hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
+        return this.spieler.getName() + " hat gewonnen!!!!!!! \nEr hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
     }
 }

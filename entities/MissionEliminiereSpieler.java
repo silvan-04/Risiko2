@@ -58,7 +58,7 @@ public class MissionEliminiereSpieler implements Missionskarten, Serializable {
      * @return Nachricht im Format "{Spielername} hat gewonnen! Er hat die Mission: "{Beschreibung}" erfüllt."
      */
     public String siegerNachricht(){
-        return this.spieler.getName() + " hat gewonnen! \n Er hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
+        return this.spieler.getName() + " hat gewonnen! \nEr hat die Mission: \""+ this.beschreibung() + "\" erfüllt.";
     }
 
 }

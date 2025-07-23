@@ -179,7 +179,7 @@ ua
 euw
 eus
 f
-1
+0
 Westeuropa
 1
 2
@@ -350,8 +350,8 @@ jp
 f
 0
 Mongolei
+5
 1
-2
 mo
 5
 ch
@@ -360,7 +360,7 @@ ir
 jp
 ka
 f
-0
+2
 Mittlerer Osten
 1
 1

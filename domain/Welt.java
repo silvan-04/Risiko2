@@ -114,6 +114,7 @@ public class Welt implements Serializable {
      * @return Anzahl der neuen Einheiten
      */
     public int armeeVerteilung(){
+        System.out.println(sv.armeeVerteilung(this.lv));
      return sv.armeeVerteilung(this.lv);
     }
 
@@ -306,9 +307,23 @@ public class Welt implements Serializable {
         kv.getablageliste().add(karte1);
         kv.getablageliste().add(karte2);
         kv.getablageliste().add(karte3);
-        aktiverSpieler().getEinheitskarten().remove(karte1);
-        aktiverSpieler().getEinheitskarten().remove(karte2);
-        aktiverSpieler().getEinheitskarten().remove(karte3);
+        Einheitskarte remove1 = null;
+        Einheitskarte remove2 = null;
+        Einheitskarte remove3 = null;
+        for(Einheitskarte karte: aktiverSpieler().getEinheitskarten()){
+                if(karte.getLandToString().equals(karte1.getLandToString())){
+                    remove1 = karte;
+                }
+                if(karte.getLandToString().equals(karte2.getLandToString())){
+                    remove2 = karte;
+                }
+                if(karte.getLandToString().equals(karte3.getLandToString())){
+                    remove3 = karte;
+                }
+        }
+        aktiverSpieler().getEinheitskarten().remove(remove1);
+        aktiverSpieler().getEinheitskarten().remove(remove2);
+        aktiverSpieler().getEinheitskarten().remove(remove3);
     }
 
     /**

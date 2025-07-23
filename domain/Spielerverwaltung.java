@@ -146,7 +146,26 @@ public class Spielerverwaltung implements Serializable {
      */
     public boolean kartenCheck(Spieler spieler, Einheitskarte karte1, Einheitskarte karte2, Einheitskarte karte3) throws SymbolException, NotYourCardException, DoppelteKarteException{
         if(karte1 != karte2 && karte1 != karte3 && karte2 != karte3) {
-            if (spieler.getEinheitskarten().contains(karte1) && spieler.getEinheitskarten().contains(karte2) && spieler.getEinheitskarten().contains(karte3)) {
+            boolean karte1Bool=false;
+            boolean karte2Bool=false;
+            boolean karte3Bool=false;
+            boolean kartenBesitz=false;
+            for(Einheitskarte karte: spieler.getEinheitskarten()){
+                if(karte.getLandToString().equals(karte1.getLandToString())){
+                    karte1Bool=true;
+                }
+                if(karte.getLandToString().equals(karte2.getLandToString())){
+                    karte2Bool=true;
+                }
+                if(karte.getLandToString().equals(karte3.getLandToString())){
+                    karte3Bool=true;
+                }
+                if(karte1Bool && karte2Bool && karte3Bool){
+                    kartenBesitz = true;
+                    break;
+                }
+            }
+            if (kartenBesitz) {
                 if (karte1.getSymbol().equals("Reiter") && karte2.getSymbol().equals("Reiter") && karte3.getSymbol().equals("Reiter")) {
                     return true;
                 } else if (karte1.getSymbol().equals("Soldat") && karte2.getSymbol().equals("Soldat") && karte3.getSymbol().equals("Soldat")) {
@@ -154,6 +173,16 @@ public class Spielerverwaltung implements Serializable {
                 } else if (karte1.getSymbol().equals("Kanone") && karte2.getSymbol().equals("Kanone") && karte3.getSymbol().equals("Kanone")) {
                     return true;
                 } else if (karte1.getSymbol().equals("Reiter") && karte2.getSymbol().equals("Kanone") && karte3.getSymbol().equals("Soldat")) {
+                    return true;
+                }else if (karte1.getSymbol().equals("Reiter") && karte2.getSymbol().equals("Soldat") && karte3.getSymbol().equals("Kanone")) {
+                    return true;
+                }else if (karte1.getSymbol().equals("Kanone") && karte2.getSymbol().equals("Reiter") && karte3.getSymbol().equals("Soldat")) {
+                    return true;
+                }else if (karte1.getSymbol().equals("Kanone") && karte2.getSymbol().equals("Soldat") && karte3.getSymbol().equals("Reiter")) {
+                    return true;
+                }else if (karte1.getSymbol().equals("Soldat") && karte2.getSymbol().equals("Kanone") && karte3.getSymbol().equals("Reiter")) {
+                    return true;
+                }else if (karte1.getSymbol().equals("Soldat") && karte2.getSymbol().equals("Reiter") && karte3.getSymbol().equals("Kanone")) {
                     return true;
                 } else {
                     throw new SymbolException();

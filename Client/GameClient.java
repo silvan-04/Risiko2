@@ -38,6 +38,7 @@ public class GameClient implements Serializable {
     private final ObjectInputStream socketIn;
     private final Socket socket;
     private final BlockingQueue<Object> replyQueue = new LinkedBlockingQueue<>();
+    private int einheiten = 0;
 
 //    /**
 //     * Launch the application.
@@ -291,7 +292,6 @@ public class GameClient implements Serializable {
             switch (phase) {
                 // 1. Phase
                 case 0:
-                    int einheiten = 0;
                     int action = (int) replyQueue.take();   // empfängt, welcher Teil der Phase durchgeführt werden soll
                     if (action == 0) {      // buttonClicked == 0 && welt.aktiverSpieler().getEinheitskarten().size()>2
                         boolean handkartenLimit = (boolean) replyQueue.take();
@@ -301,40 +301,41 @@ public class GameClient implements Serializable {
                             socketOut.writeObject(Integer.valueOf(kartenEntscheidung));
                             socketOut.flush();
                         }
-                        if (kartenEntscheidung == 0) {      // wenn der Spieler Karten einlösen möchte
-                            String[] karten = new String[player.getEinheitskarten().size()];
-                            for (int i = 0; i < player.getEinheitskarten().size(); i++) {
-                                karten[i] = player.getEinheitskarten().get(i).toString();
+                        if (kartenEntscheidung == 0) {  // wenn der Spieler Karten einlösen möchte
+                            List<Einheitskarte> spielerKarten = (List<Einheitskarte>)replyQueue.take();
+                            String[] karten = new String[spielerKarten.size()];
+                            for (int i = 0; i < spielerKarten.size(); i++) {
+                                karten[i] = spielerKarten.get(i).toString();
                             }
                             int kartenAuswahl1 = JOptionPane.showOptionDialog(risikoFrame, "Wähle die erste Karte", "Karte 1", 0, 3, null, karten, karten[0]);
                             Einheitskarte karte1 = switch (kartenAuswahl1) {
-                                case 0 -> player.getEinheitskarten().get(0);
-                                case 1 -> player.getEinheitskarten().get(1);
-                                case 2 -> player.getEinheitskarten().get(2);
-                                case 3 -> player.getEinheitskarten().get(3);
-                                case 4 -> player.getEinheitskarten().get(4);
+                                case 0 -> spielerKarten.get(0);
+                                case 1 -> spielerKarten.get(1);
+                                case 2 -> spielerKarten.get(2);
+                                case 3 -> spielerKarten.get(3);
+                                case 4 -> spielerKarten.get(4);
                                 default -> null;
                             };
                             socketOut.writeObject(karte1);
                             socketOut.flush();
                             int kartenAuswahl2 = JOptionPane.showOptionDialog(risikoFrame, "Wähle die zweite Karte", "Karte 2", 0, 3, null, karten, karten[0]);
                             Einheitskarte karte2 = switch (kartenAuswahl2) {
-                                case 0 -> player.getEinheitskarten().get(0);
-                                case 1 -> player.getEinheitskarten().get(1);
-                                case 2 -> player.getEinheitskarten().get(2);
-                                case 3 -> player.getEinheitskarten().get(3);
-                                case 4 -> player.getEinheitskarten().get(4);
+                                case 0 -> spielerKarten.get(0);
+                                case 1 -> spielerKarten.get(1);
+                                case 2 -> spielerKarten.get(2);
+                                case 3 -> spielerKarten.get(3);
+                                case 4 -> spielerKarten.get(4);
                                 default -> null;
                             };
                             socketOut.writeObject(karte2);
                             socketOut.flush();
                             int kartenAuswahl3 = JOptionPane.showOptionDialog(risikoFrame, "Wähle die dritte Karte", "Karte 3", 0, 3, null, karten, karten[0]);
                             Einheitskarte karte3 = switch (kartenAuswahl3) {
-                                case 0 -> player.getEinheitskarten().get(0);
-                                case 1 -> player.getEinheitskarten().get(1);
-                                case 2 -> player.getEinheitskarten().get(2);
-                                case 3 -> player.getEinheitskarten().get(3);
-                                case 4 -> player.getEinheitskarten().get(4);
+                                case 0 -> spielerKarten.get(0);
+                                case 1 -> spielerKarten.get(1);
+                                case 2 -> spielerKarten.get(2);
+                                case 3 -> spielerKarten.get(3);
+                                case 4 -> spielerKarten.get(4);
                                 default -> null;
                             };
                             socketOut.writeObject(karte3);
@@ -365,12 +366,11 @@ public class GameClient implements Serializable {
                             if (!stop) {
                                 try {
                                     int verschobenEinheiten = Integer.parseInt(JOptionPane.showInputDialog(risikoFrame, "Wie viele Einheiten möchtest du einsetzen? \nMax: " + (player.getEinheitenRunde() + einheiten) + " Einheiten.", "Armee verteilen!", JOptionPane.QUESTION_MESSAGE));
-                                    socketOut.writeObject(Integer.valueOf(einheiten));      // übergibt maximale Zahl an Einheiten
-                                    socketOut.flush();
                                     socketOut.writeObject(Integer.valueOf(verschobenEinheiten));    // übergibt wie viele Einheiten der Spieler einsetzen möchte
                                     socketOut.flush();
                                     boolean eingabeGültig = (boolean) replyQueue.take();
                                     if (eingabeGültig) {
+                                        einheiten = 0;
                                         ((WeltPanel) ((RisikoClientGUI) risikoFrame).getWeltPanel()).setLastClickedCountry(null);
                                         ((WeltPanel) ((RisikoClientGUI) risikoFrame).getWeltPanel()).setCountryClicked(false);
                                         boolean naechstePhase = (boolean) replyQueue.take();
@@ -451,7 +451,11 @@ public class GameClient implements Serializable {
                                     JOptionPane.showMessageDialog(risikoFrame, ex.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     String möglicheEinheiten = (String) replyQueue.take();
+
                                     try {
+                                        if(möglicheEinheiten.equals("")){
+                                            throw new ArmeeException("Dein Land hat nicht genug Einheiten um anzugreifen!");
+                                        }
                                         einheiten = Integer.parseInt(JOptionPane.showInputDialog(frame, "Gib die Anzahl der Einheiten ein, welche angreifen sollen! \nMögliche Einheiten: " + möglicheEinheiten, "Angriff", JOptionPane.PLAIN_MESSAGE));
                                         socketOut.writeObject(false);
                                         socketOut.flush();
@@ -460,11 +464,18 @@ public class GameClient implements Serializable {
 
                                     } catch (NumberFormatException e) {
                                         socketOut.writeObject(true);
+                                        socketOut.writeObject(e);
                                         socketOut.flush();
 
                                         JOptionPane.showMessageDialog(risikoFrame, "Es muss eine Zahl eingegeben werden!", "FEHLER!", JOptionPane.ERROR_MESSAGE);
+                                    }catch(ArmeeException e){
+                                        socketOut.writeObject(true);
+                                        socketOut.writeObject(e);
+                                        socketOut.flush();
                                     }
+
                                     boolean stop3 = (boolean) replyQueue.take();
+                                    System.out.println("Client stop 3"+stop3);
                                     if (stop3) {
                                         Exception excep = (Exception) replyQueue.take();
                                         JOptionPane.showMessageDialog(risikoFrame, excep.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
@@ -590,7 +601,9 @@ public class GameClient implements Serializable {
                                 boolean stop = (boolean) replyQueue.take();
                                 if (stop) {
                                     Exception ex = (Exception) replyQueue.take();
-                                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
+                                    if(!(ex instanceof NumberFormatException)){
+                                        JOptionPane.showMessageDialog(frame, ex.getMessage(), "FEHLER!", JOptionPane.ERROR_MESSAGE);
+                                    }
                                 } else {
                                     JOptionPane.showMessageDialog(risikoFrame, "Die Truppen wurden erfolgreich verschoben!", "Armee verschieben!", JOptionPane.INFORMATION_MESSAGE);
                                 }
